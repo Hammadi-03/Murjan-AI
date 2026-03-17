@@ -21,15 +21,19 @@ export const webllmService = {
   /**
    * Generates a chat response with streaming using WebLLM
    */
-  chatStream: async (messages, modelId, onChunk, onProgress) => {
+  chatStream: async (messages, modelId, onChunk, onProgress, systemInstruction) => {
     try {
       // Ensure engine is loaded
       if (!engine) {
         await webllmService.init(modelId, onProgress);
       }
 
+      const finalMessages = systemInstruction 
+        ? [{ role: "system", content: systemInstruction }, ...messages]
+        : messages;
+
       const reply = await engine.chat.completions.create({
-        messages: messages,
+        messages: finalMessages,
         stream: true,
       });
 

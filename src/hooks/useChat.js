@@ -83,6 +83,14 @@ export function useChat() {
     ));
   };
 
+  const [systemInstruction, setSystemInstruction] = useState(() => {
+    return localStorage.getItem('murjan_system_instruction') || '';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('murjan_system_instruction', systemInstruction);
+  }, [systemInstruction]);
+
   return {
     chats,
     activeChat,
@@ -93,6 +101,8 @@ export function useChat() {
     addMessageToChat,
     updateLastMessage,
     updateChatMessages,
-    renameChat
+    renameChat,
+    systemInstruction,
+    setSystemInstruction
   };
 }

@@ -39,8 +39,12 @@ export const ollamaService = {
   /**
    * Generates a chat response with streaming
    */
-  chatStream: async (messages, model = 'qwen3.5:9b', onChunk) => {
+  chatStream: async (messages, model = 'qwen3.5:9b', onChunk, systemInstruction) => {
     try {
+      const finalMessages = systemInstruction 
+        ? [{ role: "system", content: systemInstruction }, ...messages]
+        : messages;
+
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
@@ -48,7 +52,7 @@ export const ollamaService = {
         },
         body: JSON.stringify({
           model,
-          messages,
+          messages: finalMessages,
           stream: true
         })
       });

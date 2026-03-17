@@ -14,11 +14,16 @@ export const openrouterService = {
    * Generates a chat response with streaming using OpenRouter
    * Includes fallback logic to handle provider errors
    */
-  chatStream: async (messages, apiKey, modelId, onChunk) => {
+  chatStream: async (messages, apiKey, modelId, onChunk, systemInstruction) => {
     let currentModel = modelId || "openrouter/free";
     let attempts = 0;
     const maxAttempts = 3;
     const triedModels = new Set([currentModel]);
+
+    // Add system instruction to message history
+    const finalMessages = systemInstruction 
+      ? [{ role: "system", content: systemInstruction }, ...messages]
+      : messages;
 
     const runAttempt = async (model) => {
       if (!apiKey) {
@@ -35,7 +40,7 @@ export const openrouterService = {
         },
         body: JSON.stringify({
           "model": model,
-          "messages": messages,
+          "messages": finalMessages,
           "stream": true,
           "temperature": 0.7,
         })
@@ -105,9 +110,15 @@ export const openrouterService = {
         console.warn(`OpenRouter effort ${attempts} failed for model ${currentModel}:`, error.message);
         
         let finalError = error;
-        if (error.message.includes("guardrail") || error.message.includes("data policy")) {
-          finalError = new Error("Privacy Error: Please go to https://openrouter.ai/settings/privacy and allow 'Free Models' to train on inputs, or choose a different AI model.");
-          throw finalError; // Don't fallback for this specific setting error
+        // Check for common OpenRouter configuration errors
+        if (
+          error.message.includes("guardrail") || 
+          error.message.includes("data policy") || 
+          error.message.includes("User not found") ||
+          error.message.includes("Provider returned error")
+        ) {
+          finalError = new Error("Account Setup Required: Please go to https://openrouter.ai/settings/privacy and ensure 'Data Sharing' is enabled for free models. Also, verify your API Key is active in your dashboard.");
+          throw finalError; // Don't fallback for account setting errors
         }
 
         // If it's a provider error and we have fallbacks left

@@ -22,7 +22,9 @@ export default function App() {
     deleteChat,
     addMessageToChat,
     updateLastMessage,
-    renameChat
+    renameChat,
+    systemInstruction,
+    setSystemInstruction
   } = useChat();
 
   const [isTyping, setIsTyping] = useState(false);
@@ -86,27 +88,28 @@ export default function App() {
           },
           (text, progress) => {
             setWebllmProgress({ text, progress, loading: true });
-          }
+          },
+          systemInstruction
         );
       } else if (modelInfo?.provider === 'OpenRouter') {
         await openrouterService.chatStream(messages, OPENROUTER_API_KEY, currentModel, (chunk) => {
           updateLastMessage(currentId, chunk);
-        });
+        }, systemInstruction);
       } else if (modelInfo?.provider === 'Google') {
         await geminiService.chatStream(messages, GEMINI_API_KEY, currentModel, (chunk) => {
           updateLastMessage(currentId, chunk);
-        });
+        }, systemInstruction);
       } else {
         await ollamaService.chatStream(messages, currentModel, (chunk) => {
           updateLastMessage(currentId, chunk);
-        });
+        }, systemInstruction);
       }
       
     } catch (error) {
       console.error("Chat Error:", error);
       let errorMsg = `**Error:** ${error.message}`;
-      if (error.message.includes("API Key") || error.message.includes("401")) {
-        errorMsg = "Invalid or missing API Key. Please check your .env file.";
+      if (error.message.includes("VITE_") && error.message.includes("missing")) {
+        errorMsg = "API Key missing in .env file. Please check your configuration.";
       }
       if (error.message.includes("WebGPU")) {
         errorMsg = "Your browser does not support WebGPU. Please use a Chromium-based browser (Chrome/Edge) or choose a Cloud AI.";
@@ -159,6 +162,8 @@ export default function App() {
         activeModelId={currentModel}
         onModelChange={setCurrentModel}
         onRenameChat={renameChat}
+        systemInstruction={systemInstruction}
+        onSystemInstructionChange={setSystemInstruction}
       />
 
       <main className="flex-1 flex flex-col bg-[#1e212b]/40 backdrop-blur-xl relative z-10 border-l border-white/5 overflow-hidden">

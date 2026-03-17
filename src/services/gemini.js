@@ -7,7 +7,7 @@ export const geminiService = {
   /**
    * Generates a chat response with streaming using Gemini
    */
-  chatStream: async (messages, apiKey, modelId, onChunk) => {
+  chatStream: async (messages, apiKey, modelId, onChunk, systemInstruction) => {
     try {
       if (!apiKey) {
         throw new Error("Gemini API Key is missing. Please add it to your environment or settings.");
@@ -21,6 +21,10 @@ export const geminiService = {
       const modelConfig = {
         model: modelId,
       };
+
+      if (systemInstruction) {
+        modelConfig.systemInstruction = systemInstruction;
+      }
 
       // Add Google Search and Code Execution to match your Python snippet
       const tools = [
