@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { motion, AnimatePresence } from 'framer-motion';
-
+import { Settings, ShieldCheck, ExternalLink, AlertTriangle } from 'lucide-react';
 import { TextShimmer } from '../ui/text-shimmer';
 import { Typewriter } from '../ui/typewriter';
 
@@ -45,11 +45,61 @@ export default function MessageList({ messages, isTyping }) {
   }
 
   return (
-    <div className="flex flex-col gap-8 w-full max-w-4xl mx-auto pt-24 pb-6">
+    <div className="flex flex-col gap-8 w-full max-w-4xl mx-auto pt-24 pb-6 px-4">
       <AnimatePresence initial={false}>
         {messages.map((msg, index) => {
-          const isLastMessage = index === messages.length - 1;
           const isEmptyAssistant = msg.role === 'assistant' && !msg.content;
+
+          if (msg.role === 'assistant' && msg.content === 'OPENROUTER_ACCOUNT_SETUP_REQUIRED') {
+            return (
+              <motion.div 
+                key={index} 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex justify-start w-full"
+              >
+                <div className="bg-[#1e212b]/80 border border-red-500/30 rounded-3xl p-6 md:p-8 max-w-xl shadow-2xl backdrop-blur-xl ring-1 ring-white/5">
+                  <div className="flex flex-col md:flex-row items-start gap-4 md:gap-6">
+                    <div className="p-4 bg-red-500/10 rounded-2xl shrink-0">
+                      <AlertTriangle className="text-red-400" size={32} />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-xl md:text-2xl font-bold text-white mb-3 tracking-tight">Account Setup Required</h3>
+                      <p className="text-gray-400 text-sm md:text-base leading-relaxed mb-6">
+                        OpenRouter free models require <span className="text-white font-semibold">Data Sharing</span> to be enabled. 
+                        Without this, providers automatically block requests from free tier users.
+                      </p>
+                      
+                      <div className="space-y-4 mb-8">
+                        <div className="flex items-center gap-3 text-sm md:text-base text-gray-300">
+                          <div className="w-6 h-6 rounded-full bg-green-500/10 flex items-center justify-center shrink-0">
+                            <ShieldCheck size={14} className="text-green-500" />
+                          </div>
+                          <span>Go to your <strong>Privacy Settings</strong></span>
+                        </div>
+                        <div className="flex items-center gap-3 text-sm md:text-base text-gray-300">
+                          <div className="w-6 h-6 rounded-full bg-indigo-500/10 flex items-center justify-center shrink-0">
+                            <Settings size={14} className="text-indigo-400" />
+                          </div>
+                          <span>Turn <strong className="text-indigo-300 italic px-1">ON</strong>: "Allow providers to train on inputs"</span>
+                        </div>
+                      </div>
+
+                      <a 
+                        href="https://openrouter.ai/settings/privacy" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="group inline-flex items-center gap-2 px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-bold transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(79,70,229,0.3)]"
+                      >
+                        Fix Account on OpenRouter
+                        <ExternalLink size={18} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            );
+          }
 
           return (
             <motion.div 
@@ -61,7 +111,7 @@ export default function MessageList({ messages, isTyping }) {
               <div 
                 className={`max-w-[85%] px-5 py-4 rounded-3xl ${
                   msg.role === 'user' 
-                    ? 'bg-[#373b4d] text-white rounded-tr-sm shadow-lg' 
+                    ? 'bg-[#373b4d]/80 backdrop-blur-md text-white rounded-tr-sm shadow-lg border border-white/5' 
                     : 'bg-transparent text-gray-200'
                 }`}
               >

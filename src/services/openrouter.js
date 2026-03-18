@@ -117,7 +117,7 @@ export const openrouterService = {
           error.message.includes("User not found") ||
           error.message.includes("Provider returned error")
         ) {
-          finalError = new Error("Account Setup Required: Please go to https://openrouter.ai/settings/privacy and ensure 'Data Sharing' is enabled for free models. Also, verify your API Key is active in your dashboard.");
+          finalError = new Error("OPENROUTER_ACCOUNT_SETUP_REQUIRED");
           throw finalError; // Don't fallback for account setting errors
         }
 
