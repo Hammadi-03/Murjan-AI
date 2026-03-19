@@ -85,15 +85,24 @@ export default function MessageList({ messages, isTyping }) {
                         </div>
                       </div>
 
-                      <a 
-                        href="https://openrouter.ai/settings/privacy" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="group inline-flex items-center gap-2 px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-bold transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(79,70,229,0.3)]"
-                      >
-                        Fix Account on OpenRouter
-                        <ExternalLink size={18} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                      </a>
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <a 
+                          href="https://openrouter.ai/settings/privacy" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="group inline-flex items-center justify-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-bold transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(79,70,229,0.3)] flex-1 text-center"
+                        >
+                          Fix on OpenRouter
+                          <ExternalLink size={16} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                        </a>
+                        
+                        <button 
+                          onClick={() => window.dispatchEvent(new CustomEvent('switch-to-offline'))}
+                          className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white/5 hover:bg-white/10 text-gray-300 rounded-2xl font-bold transition-all border border-white/10 hover:border-white/20 flex-1 text-center"
+                        >
+                          Try Offline Mode (Zero Setup)
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>

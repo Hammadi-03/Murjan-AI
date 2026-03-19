@@ -23,8 +23,6 @@ export default function App() {
     addMessageToChat,
     updateLastMessage,
     renameChat,
-    systemInstruction,
-    setSystemInstruction
   } = useChat();
 
   const [isTyping, setIsTyping] = useState(false);
@@ -51,6 +49,18 @@ export default function App() {
       }
     };
     checkOllama();
+  }, []);
+
+  useEffect(() => {
+    const handleSwitchOffline = () => {
+      const offlineModel = MODELS.find(m => m.provider === 'WebLLM');
+      if (offlineModel) {
+        setCurrentModel(offlineModel.id);
+        setIsLanding(false); // Make sure we're in chat mode
+      }
+    };
+    window.addEventListener('switch-to-offline', handleSwitchOffline);
+    return () => window.removeEventListener('switch-to-offline', handleSwitchOffline);
   }, []);
 
   const handleStartChat = () => {
@@ -88,21 +98,20 @@ export default function App() {
           },
           (text, progress) => {
             setWebllmProgress({ text, progress, loading: true });
-          },
-          systemInstruction
+          }
         );
       } else if (modelInfo?.provider === 'OpenRouter') {
         await openrouterService.chatStream(messages, OPENROUTER_API_KEY, currentModel, (chunk) => {
           updateLastMessage(currentId, chunk);
-        }, systemInstruction);
+        });
       } else if (modelInfo?.provider === 'Google') {
         await geminiService.chatStream(messages, GEMINI_API_KEY, currentModel, (chunk) => {
           updateLastMessage(currentId, chunk);
-        }, systemInstruction);
+        });
       } else {
         await ollamaService.chatStream(messages, currentModel, (chunk) => {
           updateLastMessage(currentId, chunk);
-        }, systemInstruction);
+        });
       }
       
     } catch (error) {
@@ -162,8 +171,6 @@ export default function App() {
         activeModelId={currentModel}
         onModelChange={setCurrentModel}
         onRenameChat={renameChat}
-        systemInstruction={systemInstruction}
-        onSystemInstructionChange={setSystemInstruction}
       />
 
       <main className="flex-1 flex flex-col bg-[#1e212b]/40 backdrop-blur-xl relative z-10 border-l border-white/5 overflow-hidden">

@@ -14,16 +14,11 @@ export const openrouterService = {
    * Generates a chat response with streaming using OpenRouter
    * Includes fallback logic to handle provider errors
    */
-  chatStream: async (messages, apiKey, modelId, onChunk, systemInstruction) => {
+  chatStream: async (messages, apiKey, modelId, onChunk) => {
     let currentModel = modelId || "openrouter/free";
     let attempts = 0;
     const maxAttempts = 3;
     const triedModels = new Set([currentModel]);
-
-    // Add system instruction to message history
-    const finalMessages = systemInstruction 
-      ? [{ role: "system", content: systemInstruction }, ...messages]
-      : messages;
 
     const runAttempt = async (model) => {
       if (!apiKey) {
@@ -40,7 +35,7 @@ export const openrouterService = {
         },
         body: JSON.stringify({
           "model": model,
-          "messages": finalMessages,
+          "messages": messages,
           "stream": true,
           "temperature": 0.7,
         })

@@ -12,9 +12,7 @@ export default function Sidebar({
   onClose,
   activeModelId,
   onModelChange,
-  onRenameChat,
-  systemInstruction,
-  onSystemInstructionChange
+  onRenameChat
 }) {
   const [activeMenuId, setActiveMenuId] = useState(null);
   const [editingChatId, setEditingChatId] = useState(null);
@@ -57,7 +55,6 @@ export default function Sidebar({
           <span className="text-[17px]">My Stuff</span>
         </button>
 
-        {/* Model Selector */}
         <div className="mt-2 mb-6 px-1">
           <label className="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-2 block px-2">AI Engine</label>
           <div className="flex flex-col gap-1.5">
@@ -77,22 +74,6 @@ export default function Sidebar({
                 </span>
               </button>
             ))}
-          </div>
-        </div>
-
-        {/* AI Persona Training / System Instruction */}
-        <div className="mt-2 mb-6 px-1">
-          <label className="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-2 block px-2">AI Persona (Training)</label>
-          <div className="relative group/persona">
-            <textarea
-              value={systemInstruction}
-              onChange={(e) => onSystemInstructionChange(e.target.value)}
-              placeholder="Ex: You are a helpful assistant who speaks in Dutch..."
-              className="w-full h-24 bg-white/5 border border-white/10 rounded-xl p-3 text-xs text-gray-300 outline-none focus:border-indigo-500/50 focus:bg-white/10 transition-all resize-none placeholder:text-gray-600"
-            />
-            <div className="absolute bottom-2 right-2 opacity-0 group-hover/persona:opacity-40 transition-opacity pointer-events-none">
-              <span className="text-[9px] text-gray-400">Settings applied to all chats</span>
-            </div>
           </div>
         </div>
       </div>
