@@ -3,7 +3,7 @@
  * No API key is stored or used here; the backend holds it server-side.
  */
 
-const BACKEND = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+
 
 export const geminiService = {
   /**
@@ -14,7 +14,7 @@ export const geminiService = {
    * @param {(accumulatedText: string) => void} onChunk
    */
   chatStream: async (messages, modelId, onChunk) => {
-    const response = await fetch(`${BACKEND}/api/chat/gemini`, {
+    const response = await fetch('/api/chat/gemini', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ messages, modelId }),

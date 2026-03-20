@@ -1,0 +1,19 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[functions]
+  node_bundler = "esbuild"
+
+# Redirect all requests starting with /api to our single Netlify serverless function wrapper
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/server/api/:splat"
+  status = 200
+  force = true
+
+# Fallback specifically for React Router (Single Page Application support)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

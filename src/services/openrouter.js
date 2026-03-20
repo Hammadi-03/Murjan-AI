@@ -4,7 +4,7 @@
  * and handles all fallbacks safely.
  */
 
-const BACKEND = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+
 
 export const openrouterService = {
   /**
@@ -15,7 +15,7 @@ export const openrouterService = {
    * @param {(accumulatedText: string) => void} onChunk
    */
   chatStream: async (messages, modelId, onChunk) => {
-    const response = await fetch(`${BACKEND}/api/chat/openrouter`, {
+    const response = await fetch('/api/chat/openrouter', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ messages, modelId }),

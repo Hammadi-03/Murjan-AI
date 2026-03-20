@@ -2,7 +2,7 @@
  * Ollama service – calls our secure Express backend.
  */
 
-const BACKEND = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+
 
 export const ollamaService = {
   /**
@@ -10,7 +10,7 @@ export const ollamaService = {
    */
   chatStream: async (messages, modelId = 'qwen2.5:7b', onChunk) => {
     try {
-      const response = await fetch(`${BACKEND}/api/chat/ollama`, {
+      const response = await fetch('/api/chat/ollama', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
