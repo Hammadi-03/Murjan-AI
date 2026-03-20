@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# ── SECRETS – NEVER COMMIT THESE ─────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -23,4 +28,11 @@ dist-ssr
 *.sln
 *.sw?
 
+# Large binaries
 OllamaSetup.exe
+
+# Temp / debug files
+tmp_models.txt
+push-error.log
+test_gemini.js
+test_key.js
