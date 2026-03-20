@@ -32,8 +32,9 @@ export default function App() {
   const [webllmProgress, setWebllmProgress] = useState({ text: '', progress: 0, loading: false });
   const [isLanding, setIsLanding] = useState(true);
 
-  const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || "";
-  const OPENROUTER_API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY || "";
+  // API Keys are now strictly handled by the expressive backend
+  // The frontend no longer requests keys from .env.
+
 
   // Always start with the landing page on refresh/load
   // The user can exit landing by starting a new chat or selecting a previous one
@@ -101,11 +102,11 @@ export default function App() {
           }
         );
       } else if (modelInfo?.provider === 'OpenRouter') {
-        await openrouterService.chatStream(messages, OPENROUTER_API_KEY, currentModel, (chunk) => {
+        await openrouterService.chatStream(messages, currentModel, (chunk) => {
           updateLastMessage(currentId, chunk);
         });
       } else if (modelInfo?.provider === 'Google') {
-        await geminiService.chatStream(messages, GEMINI_API_KEY, currentModel, (chunk) => {
+        await geminiService.chatStream(messages, currentModel, (chunk) => {
           updateLastMessage(currentId, chunk);
         });
       } else {
@@ -216,16 +217,7 @@ export default function App() {
                 <span className="text-[10px] text-gray-500 uppercase tracking-widest font-medium">
                   Connected to {MODELS.find(m => m.id === currentModel)?.name || currentModel}
                 </span>
-                {!GEMINI_API_KEY && currentModel.includes('gemini') && !currentModel.includes('/') && (
-                  <span className="text-[10px] text-yellow-500 font-medium">
-                    Settings: Add Gemini API Key to .env to chat
-                  </span>
-                )}
-                {!OPENROUTER_API_KEY && currentModel.includes('/') && (
-                  <span className="text-[10px] text-yellow-500 font-medium">
-                    Settings: Add OpenRouter API Key to .env to chat
-                  </span>
-                )}
+                {/* Key statuses are now handled server-side. Wait for failing response from server. */}
                 {ollamaStatus === 'offline' && !currentModel.includes('gemini') && !currentModel.includes('/') && (
                   <span className="text-[10px] text-red-400 font-medium animate-pulse">
                     OFFLINE: Please ensure Ollama is running
