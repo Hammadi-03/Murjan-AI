@@ -11,6 +11,7 @@ const app = express();
 const ALLOWED_ORIGINS = [
   'http://localhost:5173',
   'http://localhost:4173',
+  'https://murjan.my.id',
   process.env.FRONTEND_ORIGIN,
 ].filter(Boolean);
 
