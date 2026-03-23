@@ -21,6 +21,9 @@ export const geminiService = {
     });
 
     if (!response.ok) {
+      if (response.status === 405) {
+        throw new Error('Server error 405 (Method Not Allowed). Please ensure your backend is running and the Vite proxy is correctly configured. Check your terminal for "Local backend proxy running".');
+      }
       const err = await response.json().catch(() => ({}));
       throw new Error(err.error || `Server error ${response.status}`);
     }
