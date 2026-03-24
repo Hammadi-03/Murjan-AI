@@ -12,6 +12,7 @@ export const chatGemini = async (c) => {
     }
 
     const apiKey = await getApiKey(c, 'gemini_api_key');
+    console.log(`[Gemini] API Key check: ${apiKey ? `Found (Length: ${apiKey.length})` : 'NOT FOUND'}`);
     if (!apiKey) {
       return c.json({ error: 'Database configuration error: gemini_api_key is not set in api_keys table' }, 503);
     }
