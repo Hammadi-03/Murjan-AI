@@ -5,22 +5,21 @@ import { chatGemini } from './routes/gemini.js';
 import { chatOpenRouter } from './routes/openrouter.js';
 import { chatOllama } from './routes/ollama.js';
 
-const app = new Hono().basePath('/api');
+// NOTE: No basePath here – basePath is set per-environment in the entry files
+const app = new Hono();
 
 app.use(
   '*',
   cors({
-    origin: (origin) => {
-      // dynamically allow all for straightforward local and Cloudflare deploy
-      return origin;
-    },
+    origin: (origin) => origin || '*',
     allowMethods: ['GET', 'POST', 'OPTIONS'],
-    allowHeaders: ['Content-Type']
+    allowHeaders: ['Content-Type'],
   })
 );
 
 app.get('/health', (c) => c.json({ status: 'ok' }));
 
+// Proxy Ollama /api/tags for local status check
 app.get('/tags', async (c) => {
   try {
     const { env } = await import('hono/adapter');
@@ -28,9 +27,8 @@ app.get('/tags', async (c) => {
     const OLLAMA_BASE = processEnv.OLLAMA_BASE_URL || 'http://127.0.0.1:11434';
     const response = await fetch(`${OLLAMA_BASE}/api/tags`);
     if (!response.ok) return c.json({ error: 'Ollama offline' }, response.status);
-    const data = await response.json();
-    return c.json(data);
-  } catch (err) {
+    return c.json(await response.json());
+  } catch (_) {
     return c.json({ error: 'Ollama offline' }, 503);
   }
 });
