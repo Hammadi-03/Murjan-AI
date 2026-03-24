@@ -1,12 +1,12 @@
 import * as React from "react"
 import { useState, useEffect, useRef } from "react";
-import { Lightbulb, Mic, Globe, Paperclip, Send } from "lucide-react";
+import { Lightbulb, Mic, Globe, Paperclip, Send, X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
 const PLACEHOLDERS = [
   "What's on your mind today?...",
   "What's happening in the IDNBS..?",
-  "Create a new project with Next.js",
+  "Create a new project with Murjan",
   "What is the meaning of life?",
   "Best way to learn React?",
   "How to cook a delicious meal?",
@@ -20,8 +20,35 @@ const AIChatInput = ({ onSend }) => {
   const [thinkActive, setThinkActive] = useState(false);
   const [deepSearchActive, setDeepSearchActive] = useState(false);
   const [inputValue, setInputValue] = useState("");
+  const [attachments, setAttachments] = useState([]);
   const wrapperRef = useRef(null);
   const inputRef = useRef(null);
+  const fileInputRef = useRef(null);
+
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
+    files.forEach(file => {
+      // Only allow images for now to ensure compatibility
+      if (!file.type.startsWith('image/')) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setAttachments(prev => [...prev, {
+          data: event.target.result.split(',')[1],
+          mimeType: file.type,
+          url: event.target.result
+        }]);
+      };
+      reader.readAsDataURL(file);
+    });
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const removeAttachment = (index) => {
+    setAttachments(prev => prev.filter((_, i) => i !== index));
+    if (attachments.length === 1 && !inputValue) {
+      setIsActive(false); // Close bar if empty
+    }
+  };
 
   // Cycle placeholder text when input is inactive
   useEffect(() => {
@@ -41,14 +68,15 @@ const AIChatInput = ({ onSend }) => {
   // Close input when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
+      // Do not close if clicking file dialog or if attachments exist
       if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
-        if (!inputValue) setIsActive(false);
+        if (!inputValue && attachments.length === 0) setIsActive(false);
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [inputValue]);
+  }, [inputValue, attachments]);
 
   const handleActivate = () => {
     setIsActive(true);
@@ -56,11 +84,12 @@ const AIChatInput = ({ onSend }) => {
   };
 
   const handleSend = () => {
-    if (inputValue.trim()) {
+    if (inputValue.trim() || attachments.length > 0) {
       if (onSend) {
-        onSend({ text: inputValue, thinkActive, deepSearchActive });
+        onSend({ text: inputValue, thinkActive, deepSearchActive, attachments });
       }
       setInputValue("");
+      setAttachments([]);
     }
   };
 
@@ -114,18 +143,48 @@ const AIChatInput = ({ onSend }) => {
         ref={wrapperRef}
         className="w-full max-w-3xl"
         variants={containerVariants}
-        animate={isActive || inputValue ? "expanded" : "collapsed"}
+        animate={isActive || inputValue || attachments.length > 0 ? "expanded" : "collapsed"}
         initial="collapsed"
         style={{ overflow: "hidden", borderRadius: 24, background: "#dcdfe4" }}
         onClick={handleActivate}
       >
         <div className="flex flex-col items-stretch w-full h-full">
+          {/* Thumbnails Row */}
+          {attachments.length > 0 && (
+            <div className="flex gap-2 px-4 pt-3 pb-1 overflow-x-auto w-full">
+              {attachments.map((att, idx) => (
+                <div key={idx} className="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 group ring-1 ring-black/10">
+                  <img src={att.url} alt="attachment" className="w-full h-full object-cover" />
+                  <button 
+                    type="button" 
+                    onClick={(e) => { e.stopPropagation(); removeAttachment(idx); }} 
+                    className="absolute top-0 right-0 bg-black/50 text-white rounded-bl-lg p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <X size={12} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
           {/* Input Row */}
-          <div className="flex items-center gap-2 p-2 w-full h-12">
+          <div className="flex items-center gap-2 p-2 w-full h-12 mt-auto">
+            <input 
+              type="file" 
+              ref={fileInputRef} 
+              className="hidden" 
+              multiple 
+              accept="image/*" 
+              onChange={handleFileChange} 
+            />
             <button
               className="p-2 rounded-full hover:bg-gray-300/50 transition text-gray-500 hover:text-gray-700"
               title="Attach file"
               type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                fileInputRef.current?.click();
+              }}
             >
               <Paperclip size={18} />
             </button>
@@ -174,7 +233,7 @@ const AIChatInput = ({ onSend }) => {
             </button>
             <button
               className={`flex items-center gap-1 p-2 rounded-full font-medium transition-all ${
-                inputValue.trim() ? "bg-[#1e212b] text-white" : "text-gray-400"
+                (inputValue.trim() || attachments.length > 0) ? "bg-[#1e212b] text-white" : "text-gray-400"
               }`}
               title="Send"
               type="button"
@@ -195,7 +254,7 @@ const AIChatInput = ({ onSend }) => {
               visible: { opacity: 1, y: 0, pointerEvents: "auto", transition: { delay: 0.1 } },
             }}
             initial="hidden"
-            animate={isActive || inputValue ? "visible" : "hidden"}
+            animate={isActive || inputValue || attachments.length > 0 ? "visible" : "hidden"}
             style={{ marginTop: 8 }}
           >
             <div className="flex gap-3 items-center pb-4">

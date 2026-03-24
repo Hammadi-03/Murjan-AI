@@ -29,14 +29,33 @@ export const chatGemini = async (c) => {
     }
 
     const messages = validateMessages(body.messages);
-    const modelId = validateModelId(body.modelId || 'gemini-2.0-flash');
+    const modelId = validateModelId(body.modelId || 'gemini-3-flash-preview');
 
     const ai = new GoogleGenAI({ apiKey: apiKey.trim() });
 
-    const contents = messages.map(msg => ({
-      role: msg.role === 'user' ? 'user' : 'model',
-      parts: [{ text: msg.content }]
-    }));
+    const contents = messages.map(msg => {
+      const parts = [];
+      if (msg.content) parts.push({ text: msg.content });
+
+      if (msg.attachments && msg.attachments.length > 0) {
+        msg.attachments.forEach(att => {
+          parts.push({
+            inlineData: {
+              data: att.data,
+              mimeType: att.mimeType
+            }
+          });
+        });
+      }
+
+      // Google requires at least one part
+      if (parts.length === 0) parts.push({ text: ' ' });
+
+      return {
+        role: msg.role === 'user' ? 'user' : 'model',
+        parts
+      };
+    });
 
     const isThinkingModel = modelId.includes('thinking') || modelId.includes('flash-preview');
 

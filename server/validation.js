@@ -44,7 +44,7 @@ export function validateMessages(messages) {
       );
     }
 
-    const content = msg.content;
+    const content = msg.content || '';
     if (typeof content !== 'string') {
       throw Object.assign(new Error(`messages[${i}].content must be a string`), { status: 400 });
     }
@@ -55,8 +55,16 @@ export function validateMessages(messages) {
       );
     }
 
-    // Return only the two fields we actually need – drop any extra properties
-    return { role, content: content.trim() };
+    const validMsg = { role, content: content.trim() };
+
+    if (Array.isArray(msg.attachments)) {
+      validMsg.attachments = msg.attachments.filter(att => 
+        att && typeof att.data === 'string' && typeof att.mimeType === 'string'
+      );
+    }
+
+    // Return only the fields we actually need
+    return validMsg;
   });
 }
 

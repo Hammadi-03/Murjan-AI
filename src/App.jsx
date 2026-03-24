@@ -70,20 +70,21 @@ export default function App() {
   };
 
   const handleSendMessage = async (data) => {
-    const { text, thinkActive, deepSearchActive } = data;
-    if (!text.trim()) return;
+    const { text, thinkActive, deepSearchActive, attachments } = data;
+    if (!text.trim() && (!attachments || attachments.length === 0)) return;
 
     const currentId = activeChatId;
-    addMessageToChat(currentId, { role: 'user', content: text });
+    addMessageToChat(currentId, { role: 'user', content: text, attachments });
     addMessageToChat(currentId, { role: 'assistant', content: '' });
     setIsTyping(true);
     setIsLanding(false);
     
     try {
       const chatHistory = activeChat?.messages || [];
-      const messages = [...chatHistory, { role: 'user', content: text }].map(msg => ({
+      const messages = [...chatHistory, { role: 'user', content: text, attachments }].map(msg => ({
         role: msg.role === 'user' ? 'user' : 'assistant',
-        content: msg.content
+        content: msg.content,
+        ...(msg.attachments && { attachments: msg.attachments })
       }));
       
       const modelInfo = MODELS.find(m => m.id === currentModel);

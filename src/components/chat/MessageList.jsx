@@ -135,7 +135,16 @@ export default function MessageList({ messages, isTyping }) {
                     </div>
                   )
                 ) : (
-                  <p className="text-[17px] leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+                  <div className="flex flex-col gap-3">
+                    {msg.attachments && msg.attachments.length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {msg.attachments.map((att, i) => (
+                          <img key={i} src={att.url || `data:${att.mimeType};base64,${att.data}`} alt="attachment" className="max-w-[200px] max-h-[200px] rounded-xl object-cover ring-1 ring-white/10 shadow-md" />
+                        ))}
+                      </div>
+                    )}
+                    {msg.content && <p className="text-[17px] leading-relaxed whitespace-pre-wrap">{msg.content}</p>}
+                  </div>
                 )}
               </div>
             </motion.div>

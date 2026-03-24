@@ -1,5 +1,5 @@
 export const MODELS = [
-  { id: 'gemini-3-flash-preview', name: ' Gemini 3 Flash', provider: 'Google' },
+  { id: 'gemini-3-flash-preview', name: ' Murjan AI', provider: 'Google' },
   { id: 'qwen2.5:7b', name: 'Local Power (Ollama)', provider: 'Ollama' },
 ];
 
