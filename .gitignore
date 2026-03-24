@@ -36,3 +36,8 @@ tmp_models.txt
 push-error.log
 test_gemini.js
 test_key.js
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
