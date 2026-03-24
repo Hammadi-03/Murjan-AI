@@ -1,0 +1,6 @@
+name = "murjan-ai"
+compatibility_date = "2024-03-24"
+pages_build_output_dir = "dist"
+
+# Do not add secrets to this file!
+# Define secret vars such as GEMINI_API_KEY from the Cloudflare Dashboard!

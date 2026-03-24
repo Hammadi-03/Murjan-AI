@@ -1,11 +1,6 @@
-/**
- * POST /api/chat/openrouter
- *
- * Proxies streaming requests to OpenRouter.
- * The API key is read from the server environment – NEVER from the client.
- */
-
-import { validateMessages, validateModelId, requireEnv } from '../validation.js';
+import { streamSSE } from 'hono/streaming';
+import { env } from 'hono/adapter';
+import { validateMessages, validateModelId } from '../validation.js';
 
 const FALLBACK_MODELS = [
   'google/gemini-2.0-flash-lite:free',
@@ -13,47 +8,72 @@ const FALLBACK_MODELS = [
   'qwen/qwen-2.5-72b-instruct:free',
 ];
 
-export async function chatOpenRouter(req, res) {
+export const chatOpenRouter = async (c) => {
   try {
-    // 1. Read key from server env only
-    const apiKey = requireEnv('OPENROUTER_API_KEY');
+    const processEnv = env(c);
+    const apiKey = processEnv.OPENROUTER_API_KEY;
+    if (!apiKey) {
+      return c.json({ error: 'Server configuration error: OPENROUTER_API_KEY is not set' }, 503);
+    }
 
-    // 2. Validate every piece of user input server-side
-    const messages    = validateMessages(req.body.messages);
-    const modelId     = validateModelId(req.body.modelId || 'google/gemini-2.0-flash-lite:free');
+    const body = await c.req.json().catch(() => ({}));
+    const messages = validateMessages(body.messages);
+    const modelId = validateModelId(body.modelId || 'google/gemini-2.0-flash-lite:free');
 
-    // 3. Set SSE headers
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('X-Accel-Buffering', 'no');
-    res.flushHeaders();
+    const triedModels = new Set([modelId]);
+    let currentModel = modelId;
+    let attempts = 0;
+    const MAX_ATTEMPTS = 3;
 
-    const triedModels   = new Set([modelId]);
-    let   currentModel  = modelId;
-    let   attempts      = 0;
-    const MAX_ATTEMPTS  = 3;
+    let successResponse = null;
 
-    const runAttempt = async (model) => {
-      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          Authorization:  `Bearer ${apiKey}`,
-          'HTTP-Referer': 'https://murjan-ai.com',
-          'X-Title':      'Murjan AI',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ model, messages, stream: true, temperature: 0.7 }),
-      });
+    while (attempts < MAX_ATTEMPTS) {
+      try {
+        attempts++;
+        const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+            'HTTP-Referer': 'https://murjan-ai.com',
+            'X-Title': 'Murjan AI',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ model: currentModel, messages, stream: true, temperature: 0.7 }),
+        });
 
-      if (!response.ok) {
-        let msg = `HTTP ${response.status}`;
-        try { const d = await response.json(); msg = d.error?.message || msg; } catch (_) {}
-        throw Object.assign(new Error(msg), { status: response.status });
+        if (!response.ok) {
+          let msg = `HTTP ${response.status}`;
+          try { const d = await response.json(); msg = d.error?.message || msg; } catch (_) {}
+          throw Object.assign(new Error(msg), { status: response.status });
+        }
+
+        successResponse = response;
+        break; // Success
+      } catch (err) {
+        console.warn(`[OpenRouter] attempt ${attempts} failed (${currentModel}):`, err.message);
+
+        if (
+          err.message.includes('guardrail') ||
+          err.message.includes('data policy') ||
+          err.message.includes('User not found') ||
+          err.message.includes('OPENROUTER_ACCOUNT')
+        ) {
+          throw err;
+        }
+
+        if (attempts < MAX_ATTEMPTS) {
+          const next = FALLBACK_MODELS.find((m) => !triedModels.has(m));
+          if (next) { currentModel = next; triedModels.add(next); continue; }
+        }
+        throw err;
       }
+    }
 
-      const reader  = response.body.getReader();
+    if (!successResponse) return c.json({ error: 'Failed to connect to OpenRouter' }, 500);
+
+    return streamSSE(c, async (stream) => {
+      const reader = successResponse.body.getReader();
       const decoder = new TextDecoder();
-      let hasData   = false;
 
       while (true) {
         const { done, value } = await reader.read();
@@ -72,50 +92,14 @@ export async function chatOpenRouter(req, res) {
 
           const content = parsed.choices?.[0]?.delta?.content || '';
           if (content) {
-            hasData = true;
-            res.write(`data: ${JSON.stringify({ content })}\n\n`);
+            await stream.writeSSE({ data: JSON.stringify({ content }) });
           }
         }
       }
-
-      if (!hasData) throw new Error('No data received from provider');
-    };
-
-    while (attempts < MAX_ATTEMPTS) {
-      try {
-        attempts++;
-        await runAttempt(currentModel);
-        break; // Success
-      } catch (err) {
-        console.warn(`[OpenRouter] attempt ${attempts} failed (${currentModel}):`, err.message);
-
-        // Hard failures – don't retry, surface directly
-        if (
-          err.message.includes('guardrail')         ||
-          err.message.includes('data policy')        ||
-          err.message.includes('User not found')     ||
-          err.message.includes('OPENROUTER_ACCOUNT')
-        ) {
-          throw err;
-        }
-
-        if (attempts < MAX_ATTEMPTS) {
-          const next = FALLBACK_MODELS.find((m) => !triedModels.has(m));
-          if (next) { currentModel = next; triedModels.add(next); continue; }
-        }
-        throw err;
-      }
-    }
-
-    res.write('data: [DONE]\n\n');
-    res.end();
+      await stream.writeSSE({ data: '[DONE]' });
+    });
   } catch (error) {
     console.error('[OpenRouter Route]', error.message);
-    if (!res.headersSent) {
-      res.status(error.status || 500).json({ error: error.message });
-    } else {
-      res.write(`data: ${JSON.stringify({ error: error.message })}\n\n`);
-      res.end();
-    }
+    return c.json({ error: error.message }, error.status || 500);
   }
-}
+};

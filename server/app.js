@@ -1,64 +1,33 @@
-import 'dotenv/config';
-import express from 'express';
-import cors from 'cors';
-import { rateLimit } from 'express-rate-limit';
+import { Hono } from 'hono';
+import { cors } from 'hono/cors';
+
 import { chatGemini } from './routes/gemini.js';
 import { chatOpenRouter } from './routes/openrouter.js';
 import { chatOllama } from './routes/ollama.js';
 
-const app = express();
-
-const ALLOWED_ORIGINS = [
-  'https://murjan.my.id',
-  process.env.FRONTEND_ORIGIN,
-].filter(Boolean);
+const app = new Hono().basePath('/api');
 
 app.use(
+  '*',
   cors({
-    origin: (origin, cb) => {
-      // Allow all localhost origins during local development
-      if (!origin || origin.startsWith('http://localhost:') || origin.includes('netlify.app')) {
-        return cb(null, true);
-      }
-      
-      if (ALLOWED_ORIGINS.includes(origin)) return cb(null, true);
-      cb(new Error(`CORS: ${origin} not allowed`));
+    origin: (origin) => {
+      // dynamically allow all for straightforward local and Cloudflare deploy
+      return origin;
     },
-    methods: ['GET', 'POST'],
-    allowedHeaders: ['Content-Type'],
+    allowMethods: ['GET', 'POST', 'OPTIONS'],
+    allowHeaders: ['Content-Type']
   })
 );
 
-app.use(express.json({ limit: '64kb' }));
+app.get('/health', (c) => c.json({ status: 'ok' }));
 
-const globalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  standardHeaders: 'draft-7',
-  legacyHeaders: false,
-  message: { error: 'Too many requests, please slow down.' },
-});
+app.post('/chat/gemini', chatGemini);
+app.post('/chat/openrouter', chatOpenRouter);
+app.post('/chat/ollama', chatOllama);
 
-const chatLimiter = rateLimit({
-  windowMs: 60 * 1000,
-  max: 20,
-  standardHeaders: 'draft-7',
-  legacyHeaders: false,
-  message: { error: 'Chat rate limit reached. Please wait a moment.' },
-});
-
-app.use(globalLimiter);
-
-app.get('/health', (_req, res) => res.json({ status: 'ok' }));
-
-app.post('/api/chat/gemini', chatLimiter, chatGemini);
-app.post('/api/chat/openrouter', chatLimiter, chatOpenRouter);
-app.post('/api/chat/ollama', chatLimiter, chatOllama);
-
-// eslint-disable-next-line no-unused-vars
-app.use((err, _req, res, _next) => {
+app.onError((err, c) => {
   console.error('[Server Error]', err.message);
-  res.status(err.status || 500).json({ error: err.message || 'Internal server error' });
+  return c.json({ error: err.message || 'Internal server error' }, err.status || 500);
 });
 
 export default app;

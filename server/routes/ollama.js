@@ -1,25 +1,15 @@
-/**
- * POST /api/chat/ollama
- *
- * Proxies streaming requests to a local Ollama instance.
- * No external API key needed, but we still validate user input.
- */
-
+import { streamSSE } from 'hono/streaming';
+import { env } from 'hono/adapter';
 import { validateMessages, validateModelId } from '../validation.js';
 
-const OLLAMA_BASE = process.env.OLLAMA_BASE_URL || 'http://127.0.0.1:11434';
-
-export async function chatOllama(req, res) {
+export const chatOllama = async (c) => {
   try {
-    // Validate user input server-side
-    const messages = validateMessages(req.body.messages);
-    const model    = validateModelId(req.body.modelId || 'qwen2.5:7b');
+    const processEnv = env(c);
+    const OLLAMA_BASE = processEnv.OLLAMA_BASE_URL || 'http://127.0.0.1:11434';
 
-    // SSE headers
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('X-Accel-Buffering', 'no');
-    res.flushHeaders();
+    const body = await c.req.json().catch(() => ({}));
+    const messages = validateMessages(body.messages);
+    const model = validateModelId(body.modelId || 'qwen2.5:7b');
 
     const response = await fetch(`${OLLAMA_BASE}/api/chat`, {
       method: 'POST',
@@ -41,35 +31,30 @@ export async function chatOllama(req, res) {
       );
     }
 
-    const reader  = response.body.getReader();
-    const decoder = new TextDecoder();
+    return streamSSE(c, async (stream) => {
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
 
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
 
-      const lines = decoder.decode(value, { stream: true }).split('\n');
-      for (const line of lines) {
-        if (!line.trim()) continue;
-        let data;
-        try { data = JSON.parse(line); } catch (_) { continue; }
+        const lines = decoder.decode(value, { stream: true }).split('\n');
+        for (const line of lines) {
+          if (!line.trim()) continue;
+          let data;
+          try { data = JSON.parse(line); } catch (_) { continue; }
 
-        if (data.message?.content) {
-          res.write(`data: ${JSON.stringify({ content: data.message.content })}\n\n`);
+          if (data.message?.content) {
+            await stream.writeSSE({ data: JSON.stringify({ content: data.message.content }) });
+          }
+          if (data.done) break;
         }
-        if (data.done) break;
       }
-    }
-
-    res.write('data: [DONE]\n\n');
-    res.end();
+      await stream.writeSSE({ data: '[DONE]' });
+    });
   } catch (error) {
     console.error('[Ollama Route]', error.message);
-    if (!res.headersSent) {
-      res.status(error.status || 500).json({ error: error.message });
-    } else {
-      res.write(`data: ${JSON.stringify({ error: error.message })}\n\n`);
-      res.end();
-    }
+    return c.json({ error: error.message }, error.status || 500);
   }
-}
+};

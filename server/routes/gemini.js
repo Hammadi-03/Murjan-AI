@@ -1,37 +1,26 @@
-/**
- * POST /api/chat/gemini
- *
- * Proxies streaming requests to Google Gemini.
- * The API key is read from the server environment – NEVER from the client.
- */
+import { GoogleGenAI } from '@google/genai';
+import { streamSSE } from 'hono/streaming';
+import { env } from 'hono/adapter';
+import { validateMessages, validateModelId } from '../validation.js';
 
-import { GoogleGenAI, ThinkingLevel } from '@google/genai';
-import { validateMessages, validateModelId, requireEnv } from '../validation.js';
-
-export async function chatGemini(req, res) {
+export const chatGemini = async (c) => {
   try {
-    // 1. Basic body check
-    if (!req.body || !req.body.messages) {
-      return res.status(400).json({ error: 'Missing messages in request body' });
+    const body = await c.req.json().catch(() => null);
+    if (!body || !body.messages) {
+      return c.json({ error: 'Missing messages in request body' }, 400);
     }
 
-    // 2. Read key from server env only
-    const apiKey = requireEnv('GEMINI_API_KEY');
+    const processEnv = env(c);
+    const apiKey = processEnv.GEMINI_API_KEY;
+    if (!apiKey) {
+      return c.json({ error: 'Server configuration error: GEMINI_API_KEY is not set' }, 503);
+    }
 
-    // 3. Validate user input server-side
-    const messages  = validateMessages(req.body.messages);
-    const modelId   = validateModelId(req.body.modelId || 'gemini-2.0-flash');
-
-    // 4. Set SSE headers for streaming
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
-    res.setHeader('X-Accel-Buffering', 'no'); 
-    res.flushHeaders();
+    const messages = validateMessages(body.messages);
+    const modelId = validateModelId(body.modelId || 'gemini-2.0-flash');
 
     const ai = new GoogleGenAI({ apiKey });
 
-    // Format for @google/genai v1 SDK
     const contents = messages.map(msg => ({
       role: msg.role === 'user' ? 'user' : 'model',
       parts: [{ text: msg.content }]
@@ -49,38 +38,29 @@ export async function chatGemini(req, res) {
       })
     });
 
-    // Handle stream from the result object
-    // Note: in unified SDK, we often iterate over result.stream
-    const stream = result.stream || result; 
+    return streamSSE(c, async (stream) => {
+      const gStream = result.stream || result;
+      for await (const chunk of gStream) {
+        if (!chunk.candidates?.[0]?.content?.parts) continue;
+        
+        for (const part of chunk.candidates[0].content.parts) {
+          let text = '';
+          if (part.text) text = part.text;
+          else if (part.executableCode) text = `\n\`\`\`${part.executableCode.language || ''}\n${part.executableCode.code}\n\`\`\`\n`;
+          else if (part.codeExecutionResult) text = `\n**Output:**\n\`\`\`\n${part.codeExecutionResult.output}\n\`\`\`\n`;
+          else if (part.thought) text = `\n> *Thinking...*\n${part.thought}\n`;
 
-    for await (const chunk of stream) {
-      if (!chunk.candidates?.[0]?.content?.parts) continue;
-      
-      for (const part of chunk.candidates[0].content.parts) {
-        let text = '';
-        if (part.text)                  text = part.text;
-        else if (part.executableCode)   text = `\n\`\`\`${part.executableCode.language || ''}\n${part.executableCode.code}\n\`\`\`\n`;
-        else if (part.codeExecutionResult) text = `\n**Output:**\n\`\`\`\n${part.codeExecutionResult.output}\n\`\`\`\n`;
-        else if (part.thought)          text = `\n> *Thinking...*\n${part.thought}\n`;
-
-        if (text) {
-          res.write(`data: ${JSON.stringify({ content: text })}\n\n`);
+          if (text) {
+            await stream.writeSSE({ data: JSON.stringify({ content: text }) });
+          }
         }
       }
-    }
-
-    res.write('data: [DONE]\n\n');
-    res.end();
+      await stream.writeSSE({ data: '[DONE]' });
+    });
 
   } catch (error) {
     console.error('[Gemini Route Error]', error);
     const msg = error.message || 'AI service error';
-    
-    if (!res.headersSent) {
-      res.status(error.status || 500).json({ error: msg });
-    } else {
-      res.write(`data: ${JSON.stringify({ error: msg })}\n\n`);
-      res.end();
-    }
+    return c.json({ error: msg }, error.status || 500);
   }
-}
+};
