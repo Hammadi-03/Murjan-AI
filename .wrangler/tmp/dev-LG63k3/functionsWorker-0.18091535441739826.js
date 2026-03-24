@@ -1,7 +1,7 @@
 var __defProp = Object.defineProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 
-// .wrangler/tmp/bundle-pdhYeG/checked-fetch.js
+// .wrangler/tmp/bundle-xTqabp/checked-fetch.js
 var urls = /* @__PURE__ */ new Set();
 function checkURL(request, init) {
   const url = request instanceof URL ? request : new URL(
@@ -79,7 +79,7 @@ function checkURL2(request, init) {
 __name(checkURL2, "checkURL");
 var urls2;
 var init_checked_fetch = __esm({
-  "../.wrangler/tmp/bundle-UndSyK/checked-fetch.js"() {
+  "../.wrangler/tmp/bundle-8GC22V/checked-fetch.js"() {
     urls2 = /* @__PURE__ */ new Set();
     __name2(checkURL2, "checkURL");
     globalThis.fetch = new Proxy(globalThis.fetch, {
@@ -21976,9 +21976,37 @@ async function getApiKey(c, keyName) {
   } catch (error) {
     console.warn(`Error resolving API key environment variables for ${keyName}`);
   }
+  try {
+    const getMysql = new Function("return import('mysql2/promise')");
+    const mysql = await getMysql();
+    if (!pool) {
+      pool = mysql.createPool({
+        host: process.env.DB_HOST || "localhost",
+        user: process.env.DB_USER || "root",
+        password: process.env.DB_PASSWORD || "",
+        database: process.env.DB_NAME || "murjan_ai",
+        waitForConnections: true,
+        connectionLimit: 5
+      });
+    }
+    const [rows] = await pool.query(
+      "SELECT key_value FROM api_keys WHERE key_name = ? LIMIT 1",
+      [keyName]
+    );
+    if (rows && rows[0] && rows[0].key_value) {
+      const dbKey = rows[0].key_value.trim();
+      if (!dbKey.includes("(Replace this")) return dbKey;
+    }
+  } catch (error) {
+    if (!process.env.DB_HOST) {
+    } else {
+      console.error(`[DB Error] Failed to fetch "${keyName}":`, error.message);
+    }
+  }
   return null;
 }
 __name(getApiKey, "getApiKey");
+var pool;
 var init_db = __esm({
   "../server/db.js"() {
     init_functionsRoutes_0_5588747989604128();
@@ -23010,7 +23038,7 @@ var jsonError2 = /* @__PURE__ */ __name(async (request, env2, _ctx, middlewareCt
 }, "jsonError");
 var middleware_miniflare3_json_error_default2 = jsonError2;
 
-// .wrangler/tmp/bundle-pdhYeG/middleware-insertion-facade.js
+// .wrangler/tmp/bundle-xTqabp/middleware-insertion-facade.js
 var __INTERNAL_WRANGLER_MIDDLEWARE__2 = [
   middleware_ensure_req_body_drained_default2,
   middleware_miniflare3_json_error_default2
@@ -23042,7 +23070,7 @@ function __facade_invoke__2(request, env2, ctx, dispatch, finalMiddleware) {
 }
 __name(__facade_invoke__2, "__facade_invoke__");
 
-// .wrangler/tmp/bundle-pdhYeG/middleware-loader.entry.ts
+// .wrangler/tmp/bundle-xTqabp/middleware-loader.entry.ts
 var __Facade_ScheduledController__2 = class ___Facade_ScheduledController__2 {
   constructor(scheduledTime, cron, noRetry) {
     this.scheduledTime = scheduledTime;

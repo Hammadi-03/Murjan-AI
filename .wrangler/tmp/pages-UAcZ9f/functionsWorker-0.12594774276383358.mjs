@@ -32,7 +32,7 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 
-// ../.wrangler/tmp/bundle-SiSoGX/checked-fetch.js
+// ../.wrangler/tmp/bundle-U3CuJ4/checked-fetch.js
 function checkURL(request, init) {
   const url = request instanceof URL ? request : new URL(
     (typeof request === "string" ? new Request(request, init) : request).url
@@ -50,7 +50,7 @@ function checkURL(request, init) {
 }
 var urls;
 var init_checked_fetch = __esm({
-  "../.wrangler/tmp/bundle-SiSoGX/checked-fetch.js"() {
+  "../.wrangler/tmp/bundle-U3CuJ4/checked-fetch.js"() {
     urls = /* @__PURE__ */ new Set();
     __name(checkURL, "checkURL");
     globalThis.fetch = new Proxy(globalThis.fetch, {
@@ -66,7 +66,7 @@ var init_checked_fetch = __esm({
 // ../node_modules/hono/dist/http-exception.js
 var init_http_exception = __esm({
   "../node_modules/hono/dist/http-exception.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
   }
 });
@@ -75,7 +75,7 @@ var init_http_exception = __esm({
 var GET_MATCH_RESULT;
 var init_constants = __esm({
   "../node_modules/hono/dist/request/constants.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     GET_MATCH_RESULT = /* @__PURE__ */ Symbol();
   }
@@ -113,7 +113,7 @@ function convertFormDataToBodyData(formData, options) {
 var parseBody, handleParsingAllValues, handleParsingNestedValues;
 var init_body = __esm({
   "../node_modules/hono/dist/utils/body.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     init_request();
     parseBody = /* @__PURE__ */ __name(async (request, options = /* @__PURE__ */ Object.create(null)) => {
@@ -167,7 +167,7 @@ var init_body = __esm({
 var splitPath, splitRoutingPath, extractGroupsFromPath, replaceGroupMarks, patternCache, getPattern, tryDecode, tryDecodeURI, getPath, getPathNoStrict, mergePath, checkOptionalParameter, _decodeURI, _getQueryParam, getQueryParam, getQueryParams, decodeURIComponent_;
 var init_url = __esm({
   "../node_modules/hono/dist/utils/url.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     splitPath = /* @__PURE__ */ __name((path2) => {
       const paths = path2.split("/");
@@ -378,7 +378,7 @@ var init_url = __esm({
 var tryDecodeURIComponent, HonoRequest;
 var init_request = __esm({
   "../node_modules/hono/dist/request.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     init_http_exception();
     init_constants();
@@ -660,7 +660,7 @@ var init_request = __esm({
 var HtmlEscapedCallbackPhase, raw, resolveCallback;
 var init_html = __esm({
   "../node_modules/hono/dist/utils/html.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     HtmlEscapedCallbackPhase = {
       Stringify: 1,
@@ -709,7 +709,7 @@ var init_html = __esm({
 var TEXT_PLAIN, setDefaultContentType, createResponseInstance, Context;
 var init_context = __esm({
   "../node_modules/hono/dist/context.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     init_request();
     init_html();
@@ -1128,7 +1128,7 @@ var init_context = __esm({
 var handle;
 var init_handler = __esm({
   "../node_modules/hono/dist/adapter/cloudflare-pages/handler.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     init_context();
     init_http_exception();
@@ -1149,7 +1149,7 @@ var init_handler = __esm({
 // ../node_modules/hono/dist/adapter/cloudflare-pages/conninfo.js
 var init_conninfo = __esm({
   "../node_modules/hono/dist/adapter/cloudflare-pages/conninfo.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
   }
 });
@@ -1157,7 +1157,7 @@ var init_conninfo = __esm({
 // ../node_modules/hono/dist/adapter/cloudflare-pages/index.js
 var init_cloudflare_pages = __esm({
   "../node_modules/hono/dist/adapter/cloudflare-pages/index.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     init_handler();
     init_conninfo();
@@ -1168,7 +1168,7 @@ var init_cloudflare_pages = __esm({
 var compose;
 var init_compose = __esm({
   "../node_modules/hono/dist/compose.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     compose = /* @__PURE__ */ __name((middleware, onError, onNotFound) => {
       return (context, next) => {
@@ -1220,7 +1220,7 @@ var init_compose = __esm({
 var METHOD_NAME_ALL, METHOD_NAME_ALL_LOWERCASE, METHODS, MESSAGE_MATCHER_IS_ALREADY_BUILT, UnsupportedPathError;
 var init_router = __esm({
   "../node_modules/hono/dist/router.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     METHOD_NAME_ALL = "ALL";
     METHOD_NAME_ALL_LOWERCASE = "all";
@@ -1238,7 +1238,7 @@ var init_router = __esm({
 var COMPOSED_HANDLER;
 var init_constants2 = __esm({
   "../node_modules/hono/dist/utils/constants.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     COMPOSED_HANDLER = "__COMPOSED_HANDLER";
   }
@@ -1248,7 +1248,7 @@ var init_constants2 = __esm({
 var notFoundHandler, errorHandler, Hono;
 var init_hono_base = __esm({
   "../node_modules/hono/dist/hono-base.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     init_compose();
     init_context();
@@ -1652,7 +1652,7 @@ function match(method, path2) {
 var emptyParam;
 var init_matcher = __esm({
   "../node_modules/hono/dist/router/reg-exp-router/matcher.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     init_router();
     emptyParam = [];
@@ -1683,7 +1683,7 @@ function compareKey(a, b) {
 var LABEL_REG_EXP_STR, ONLY_WILDCARD_REG_EXP_STR, TAIL_WILDCARD_REG_EXP_STR, PATH_ERROR, regExpMetaChars, Node;
 var init_node = __esm({
   "../node_modules/hono/dist/router/reg-exp-router/node.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     LABEL_REG_EXP_STR = "[^/]+";
     ONLY_WILDCARD_REG_EXP_STR = ".*";
@@ -1783,7 +1783,7 @@ var init_node = __esm({
 var Trie;
 var init_trie = __esm({
   "../node_modules/hono/dist/router/reg-exp-router/trie.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     init_node();
     Trie = class {
@@ -1929,7 +1929,7 @@ function findMiddleware(middleware, path2) {
 var nullMatcher, wildcardRegExpCache, RegExpRouter;
 var init_router2 = __esm({
   "../node_modules/hono/dist/router/reg-exp-router/router.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     init_router();
     init_url();
@@ -2047,7 +2047,7 @@ var init_router2 = __esm({
 // ../node_modules/hono/dist/router/reg-exp-router/prepared-router.js
 var init_prepared_router = __esm({
   "../node_modules/hono/dist/router/reg-exp-router/prepared-router.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     init_router();
     init_matcher();
@@ -2058,7 +2058,7 @@ var init_prepared_router = __esm({
 // ../node_modules/hono/dist/router/reg-exp-router/index.js
 var init_reg_exp_router = __esm({
   "../node_modules/hono/dist/router/reg-exp-router/index.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     init_router2();
     init_prepared_router();
@@ -2069,7 +2069,7 @@ var init_reg_exp_router = __esm({
 var SmartRouter;
 var init_router3 = __esm({
   "../node_modules/hono/dist/router/smart-router/router.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     init_router();
     SmartRouter = class {
@@ -2134,7 +2134,7 @@ var init_router3 = __esm({
 // ../node_modules/hono/dist/router/smart-router/index.js
 var init_smart_router = __esm({
   "../node_modules/hono/dist/router/smart-router/index.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     init_router3();
   }
@@ -2144,7 +2144,7 @@ var init_smart_router = __esm({
 var emptyParams, hasChildren, Node2;
 var init_node2 = __esm({
   "../node_modules/hono/dist/router/trie-router/node.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     init_router();
     init_url();
@@ -2331,7 +2331,7 @@ var init_node2 = __esm({
 var TrieRouter;
 var init_router4 = __esm({
   "../node_modules/hono/dist/router/trie-router/router.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     init_url();
     init_node2();
@@ -2364,7 +2364,7 @@ var init_router4 = __esm({
 // ../node_modules/hono/dist/router/trie-router/index.js
 var init_trie_router = __esm({
   "../node_modules/hono/dist/router/trie-router/index.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     init_router4();
   }
@@ -2374,7 +2374,7 @@ var init_trie_router = __esm({
 var Hono2;
 var init_hono = __esm({
   "../node_modules/hono/dist/hono.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     init_hono_base();
     init_reg_exp_router();
@@ -2402,7 +2402,7 @@ var init_hono = __esm({
 // ../node_modules/hono/dist/index.js
 var init_dist = __esm({
   "../node_modules/hono/dist/index.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     init_hono();
   }
@@ -2412,7 +2412,7 @@ var init_dist = __esm({
 var cors;
 var init_cors = __esm({
   "../node_modules/hono/dist/middleware/cors/index.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     cors = /* @__PURE__ */ __name((options) => {
       const defaults = {
@@ -2507,7 +2507,7 @@ var init_cors = __esm({
 // ../node_modules/retry/lib/retry_operation.js
 var require_retry_operation = __commonJS({
   "../node_modules/retry/lib/retry_operation.js"(exports, module) {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     function RetryOperation(timeouts, options) {
       if (typeof options === "boolean") {
@@ -2645,7 +2645,7 @@ var require_retry_operation = __commonJS({
 // ../node_modules/retry/lib/retry.js
 var require_retry = __commonJS({
   "../node_modules/retry/lib/retry.js"(exports) {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     var RetryOperation = require_retry_operation();
     exports.operation = function(options) {
@@ -2733,7 +2733,7 @@ var require_retry = __commonJS({
 // ../node_modules/retry/index.js
 var require_retry2 = __commonJS({
   "../node_modules/retry/index.js"(exports, module) {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     module.exports = require_retry();
   }
@@ -2743,7 +2743,7 @@ var require_retry2 = __commonJS({
 var require_p_retry = __commonJS({
   "../node_modules/p-retry/index.js"(exports, module) {
     "use strict";
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     var retry = require_retry2();
     var networkErrorMsgs = [
@@ -13216,7 +13216,7 @@ function sleep(ms) {
 var import_p_retry, _defaultBaseGeminiUrl, _defaultBaseVertexUrl, BaseModule, Language, Outcome, FunctionResponseScheduling, Type, PhishBlockThreshold, AuthType, HttpElementLocation, ApiSpec, Behavior, DynamicRetrievalConfigMode, FunctionCallingConfigMode, ThinkingLevel, PersonGeneration, HarmCategory, HarmBlockMethod, HarmBlockThreshold, FinishReason, HarmProbability, HarmSeverity, UrlRetrievalStatus, BlockedReason, TrafficType, Modality, MediaResolution, TuningMode, AdapterSize, JobState, TuningJobState, AggregationMetric, PairwiseChoice, TuningTask, PartMediaResolutionLevel, ToolType, ResourceScope, FeatureSelectionPreference, Environment, ProminentPeople, EmbeddingApiType, SafetyFilterLevel, ImagePromptLanguage, MaskReferenceMode, ControlReferenceType, SubjectReferenceType, EditMode, SegmentMode, VideoGenerationReferenceType, VideoGenerationMaskMode, VideoCompressionQuality, TuningMethod, DocumentState, FileState, FileSource, TurnCompleteReason, MediaModality, VadSignalType, VoiceActivityType, StartSensitivity, EndSensitivity, ActivityHandling, TurnCoverage, Scale, MusicGenerationMode, LiveMusicPlaybackControl, HttpResponse, GenerateContentResponse, EmbedContentResponse, GenerateImagesResponse, EditImageResponse, UpscaleImageResponse, RecontextImageResponse, SegmentImageResponse, ListModelsResponse, DeleteModelResponse, CountTokensResponse, ComputeTokensResponse, GenerateVideosOperation, ListTuningJobsResponse, CancelTuningJobResponse, DeleteCachedContentResponse, ListCachedContentsResponse, ListDocumentsResponse, ListFileSearchStoresResponse, UploadToFileSearchStoreResumableResponse, ImportFileOperation, ListFilesResponse, CreateFileResponse, DeleteFileResponse, RegisterFilesResponse, ListBatchJobsResponse, LiveServerMessage, LiveMusicServerMessage, UploadToFileSearchStoreOperation, PagedItem, Pager, Batches, Caches, Chats, Chat, ApiError, Files, CONTENT_TYPE_HEADER, SERVER_TIMEOUT_HEADER, USER_AGENT_HEADER, GOOGLE_API_CLIENT_HEADER, SDK_VERSION, LIBRARY_LABEL, VERTEX_AI_API_DEFAULT_VERSION, GOOGLE_AI_API_DEFAULT_VERSION, DEFAULT_RETRY_ATTEMPTS, DEFAULT_RETRY_HTTP_STATUS_CODES, ApiClient, MCP_LABEL, hasMcpToolUsageFromMcpToTool, McpCallableTool, LiveMusic, LiveMusicSession, FUNCTION_RESPONSE_REQUIRES_ID, Live, defaultLiveSendClientContentParamerters, Session, DEFAULT_MAX_REMOTE_CALLS, Models, Operations, Tokens, Documents, FileSearchStores, uuid4Internal, uuid4, castToError, GeminiNextGenAPIClientError, APIError, APIUserAbortError, APIConnectionError, APIConnectionTimeoutError, BadRequestError, AuthenticationError, PermissionDeniedError, NotFoundError, ConflictError, UnprocessableEntityError, RateLimitError, InternalServerError, startsWithSchemeRegexp, isAbsoluteURL, isArrayInternal, isArray, isReadonlyArrayInternal, isReadonlyArray, validatePositiveInteger, safeJSON, sleep$1, FallbackEncoder, VERSION, checkFileSupport, isAsyncIterable, isBlobLike, isFileLike, isResponseLike, APIResource, EMPTY, createPathTagFunction, path, BaseInteractions, Interactions, encodeUTF8_, decodeUTF8_, LineDecoder, levelNumbers, parseLogLevel, noopLogger, cachedLoggers, formatRequestDetails, Stream, SSEDecoder, APIPromise, brand_privateNullableHeaders, buildHeaders, readEnv, _a, BaseGeminiNextGenAPIClient, GeminiNextGenAPIClient, Tunings, BrowserDownloader, MAX_CHUNK_SIZE, MAX_RETRY_COUNT, INITIAL_RETRY_DELAY_MS, DELAY_MULTIPLIER, X_GOOG_UPLOAD_STATUS_HEADER_FIELD, BrowserUploader, BrowserWebSocketFactory, BrowserWebSocket, GOOGLE_API_KEY_HEADER, WebAuth, LANGUAGE_LABEL_PREFIX, GoogleGenAI;
 var init_web = __esm({
   "../node_modules/@google/genai/dist/web/index.mjs"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     import_p_retry = __toESM(require_p_retry(), 1);
     _defaultBaseGeminiUrl = void 0;
@@ -20717,7 +20717,7 @@ ${underline}`);
 var StreamingApi;
 var init_stream = __esm({
   "../node_modules/hono/dist/utils/stream.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     StreamingApi = class {
       static {
@@ -20804,7 +20804,7 @@ var init_stream = __esm({
 var isOldBunVersion;
 var init_utils = __esm({
   "../node_modules/hono/dist/helper/streaming/utils.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     isOldBunVersion = /* @__PURE__ */ __name(() => {
       const version = typeof Bun !== "undefined" ? Bun.version : void 0;
@@ -20821,7 +20821,7 @@ var init_utils = __esm({
 // ../node_modules/hono/dist/helper/streaming/stream.js
 var init_stream2 = __esm({
   "../node_modules/hono/dist/helper/streaming/stream.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     init_stream();
     init_utils();
@@ -20832,7 +20832,7 @@ var init_stream2 = __esm({
 var SSEStreamingApi, run, contextStash, streamSSE;
 var init_sse = __esm({
   "../node_modules/hono/dist/helper/streaming/sse.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     init_html();
     init_stream();
@@ -20905,7 +20905,7 @@ var init_sse = __esm({
 // ../node_modules/hono/dist/helper/streaming/text.js
 var init_text = __esm({
   "../node_modules/hono/dist/helper/streaming/text.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     init_context();
     init_streaming();
@@ -20915,7 +20915,7 @@ var init_text = __esm({
 // ../node_modules/hono/dist/helper/streaming/index.js
 var init_streaming = __esm({
   "../node_modules/hono/dist/helper/streaming/index.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     init_stream2();
     init_sse();
@@ -20934,7 +20934,7 @@ __export(adapter_exports, {
 var env, knownUserAgents, getRuntimeKey, checkUserAgentEquals;
 var init_adapter = __esm({
   "../node_modules/hono/dist/helper/adapter/index.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     env = /* @__PURE__ */ __name((c, runtime) => {
       const global = globalThis;
@@ -21038,7 +21038,7 @@ function validateModelId(modelId) {
 var ALLOWED_ROLES, MAX_MESSAGES, MAX_MSG_LENGTH, MODEL_ID_RE;
 var init_validation = __esm({
   "../server/validation.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     ALLOWED_ROLES = /* @__PURE__ */ new Set(["user", "assistant", "system"]);
     MAX_MESSAGES = 50;
@@ -21095,7 +21095,7 @@ async function getApiKey(c, keyName) {
 var pool;
 var init_db = __esm({
   "../server/db.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     init_adapter();
     __name(getApiKey, "getApiKey");
@@ -21106,7 +21106,7 @@ var init_db = __esm({
 var chatGemini;
 var init_gemini = __esm({
   "../server/routes/gemini.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     init_web();
     init_streaming();
@@ -21193,7 +21193,7 @@ ${part.thought}
 var FALLBACK_MODELS, chatOpenRouter;
 var init_openrouter = __esm({
   "../server/routes/openrouter.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     init_streaming();
     init_adapter();
@@ -21297,7 +21297,7 @@ var init_openrouter = __esm({
 var chatOllama;
 var init_ollama = __esm({
   "../server/routes/ollama.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     init_streaming();
     init_adapter();
@@ -21362,7 +21362,7 @@ var init_ollama = __esm({
 var app, app_default;
 var init_app = __esm({
   "../server/app.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     init_dist();
     init_cors();
@@ -21408,7 +21408,7 @@ function onRequest(context) {
 }
 var init_hello = __esm({
   "api/hello.js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     init_cloudflare_pages();
     init_app();
@@ -21420,7 +21420,7 @@ var init_hello = __esm({
 var pagedApp, onRequest2;
 var init_route = __esm({
   "api/[[route]].js"() {
-    init_functionsRoutes_0_3130692565895674();
+    init_functionsRoutes_0_8156409832817131();
     init_checked_fetch();
     init_cloudflare_pages();
     init_dist();
@@ -21431,10 +21431,10 @@ var init_route = __esm({
   }
 });
 
-// ../.wrangler/tmp/pages-Fp6Laq/functionsRoutes-0.3130692565895674.mjs
+// ../.wrangler/tmp/pages-UAcZ9f/functionsRoutes-0.8156409832817131.mjs
 var routes;
-var init_functionsRoutes_0_3130692565895674 = __esm({
-  "../.wrangler/tmp/pages-Fp6Laq/functionsRoutes-0.3130692565895674.mjs"() {
+var init_functionsRoutes_0_8156409832817131 = __esm({
+  "../.wrangler/tmp/pages-UAcZ9f/functionsRoutes-0.8156409832817131.mjs"() {
     init_hello();
     init_route();
     routes = [
@@ -21456,20 +21456,20 @@ var init_functionsRoutes_0_3130692565895674 = __esm({
   }
 });
 
-// ../.wrangler/tmp/bundle-SiSoGX/middleware-loader.entry.ts
-init_functionsRoutes_0_3130692565895674();
+// ../.wrangler/tmp/bundle-U3CuJ4/middleware-loader.entry.ts
+init_functionsRoutes_0_8156409832817131();
 init_checked_fetch();
 
-// ../.wrangler/tmp/bundle-SiSoGX/middleware-insertion-facade.js
-init_functionsRoutes_0_3130692565895674();
+// ../.wrangler/tmp/bundle-U3CuJ4/middleware-insertion-facade.js
+init_functionsRoutes_0_8156409832817131();
 init_checked_fetch();
 
 // ../node_modules/wrangler/templates/pages-template-worker.ts
-init_functionsRoutes_0_3130692565895674();
+init_functionsRoutes_0_8156409832817131();
 init_checked_fetch();
 
 // ../node_modules/path-to-regexp/dist.es2015/index.js
-init_functionsRoutes_0_3130692565895674();
+init_functionsRoutes_0_8156409832817131();
 init_checked_fetch();
 function lexer(str) {
   var tokens = [];
@@ -21917,7 +21917,7 @@ var cloneResponse = /* @__PURE__ */ __name((response) => (
 ), "cloneResponse");
 
 // ../node_modules/wrangler/templates/middleware/middleware-ensure-req-body-drained.ts
-init_functionsRoutes_0_3130692565895674();
+init_functionsRoutes_0_8156409832817131();
 init_checked_fetch();
 var drainBody = /* @__PURE__ */ __name(async (request, env2, _ctx, middlewareCtx) => {
   try {
@@ -21937,7 +21937,7 @@ var drainBody = /* @__PURE__ */ __name(async (request, env2, _ctx, middlewareCtx
 var middleware_ensure_req_body_drained_default = drainBody;
 
 // ../node_modules/wrangler/templates/middleware/middleware-miniflare3-json-error.ts
-init_functionsRoutes_0_3130692565895674();
+init_functionsRoutes_0_8156409832817131();
 init_checked_fetch();
 function reduceError(e) {
   return {
@@ -21961,7 +21961,7 @@ var jsonError = /* @__PURE__ */ __name(async (request, env2, _ctx, middlewareCtx
 }, "jsonError");
 var middleware_miniflare3_json_error_default = jsonError;
 
-// ../.wrangler/tmp/bundle-SiSoGX/middleware-insertion-facade.js
+// ../.wrangler/tmp/bundle-U3CuJ4/middleware-insertion-facade.js
 var __INTERNAL_WRANGLER_MIDDLEWARE__ = [
   middleware_ensure_req_body_drained_default,
   middleware_miniflare3_json_error_default
@@ -21969,7 +21969,7 @@ var __INTERNAL_WRANGLER_MIDDLEWARE__ = [
 var middleware_insertion_facade_default = pages_template_worker_default;
 
 // ../node_modules/wrangler/templates/middleware/common.ts
-init_functionsRoutes_0_3130692565895674();
+init_functionsRoutes_0_8156409832817131();
 init_checked_fetch();
 var __facade_middleware__ = [];
 function __facade_register__(...args) {
@@ -21995,7 +21995,7 @@ function __facade_invoke__(request, env2, ctx, dispatch, finalMiddleware) {
 }
 __name(__facade_invoke__, "__facade_invoke__");
 
-// ../.wrangler/tmp/bundle-SiSoGX/middleware-loader.entry.ts
+// ../.wrangler/tmp/bundle-U3CuJ4/middleware-loader.entry.ts
 var __Facade_ScheduledController__ = class ___Facade_ScheduledController__ {
   constructor(scheduledTime, cron, noRetry) {
     this.scheduledTime = scheduledTime;
@@ -22104,4 +22104,4 @@ export {
    * SPDX-License-Identifier: Apache-2.0
    *)
 */
-//# sourceMappingURL=functionsWorker-0.09687394510669889.mjs.map
+//# sourceMappingURL=functionsWorker-0.12594774276383358.mjs.map
