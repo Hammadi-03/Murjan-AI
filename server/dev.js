@@ -5,6 +5,8 @@
  * Run via:  node server/dev.js
  */
 
+import dotenv from 'dotenv';
+dotenv.config({ override: true });
 import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
 import app from './app.js';
