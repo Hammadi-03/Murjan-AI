@@ -127,7 +127,7 @@ export default function MessageList({ messages, isTyping }) {
                 {msg.role === 'assistant' ? (
                   isEmptyAssistant && isTyping ? (
                     <TextShimmer className="text-sm font-medium" duration={1.5}>
-                      Thinking...
+                      Putting the think in thinking ...
                     </TextShimmer>
                   ) : (
                     <div className="prose prose-invert prose-p:leading-relaxed prose-pre:bg-[#1a1c25] prose-pre:border prose-pre:border-white/5 max-w-none">
