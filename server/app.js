@@ -9,11 +9,6 @@ import { chatOllama } from './routes/ollama.js';
 const app = express();
 
 const ALLOWED_ORIGINS = [
-  'http://localhost:5173',
-  'http://localhost:5174',
-  'http://localhost:5175',
-  'http://localhost:5176',
-  'http://localhost:4173',
   'https://murjan.my.id',
   process.env.FRONTEND_ORIGIN,
 ].filter(Boolean);
@@ -21,9 +16,12 @@ const ALLOWED_ORIGINS = [
 app.use(
   cors({
     origin: (origin, cb) => {
-      // In a Netlify Serverless environment or development, origins might be loose or matched to ALLOWED_ORIGINS.
-      // Netlify functions auto-handle CORS on same-domain.
-      if (!origin || ALLOWED_ORIGINS.includes(origin) || origin.includes('netlify.app')) return cb(null, true);
+      // Allow all localhost origins during local development
+      if (!origin || origin.startsWith('http://localhost:') || origin.includes('netlify.app')) {
+        return cb(null, true);
+      }
+      
+      if (ALLOWED_ORIGINS.includes(origin)) return cb(null, true);
       cb(new Error(`CORS: ${origin} not allowed`));
     },
     methods: ['GET', 'POST'],
