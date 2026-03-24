@@ -21,6 +21,20 @@ app.use(
 
 app.get('/health', (c) => c.json({ status: 'ok' }));
 
+app.get('/tags', async (c) => {
+  try {
+    const { env } = await import('hono/adapter');
+    const processEnv = env(c);
+    const OLLAMA_BASE = processEnv.OLLAMA_BASE_URL || 'http://127.0.0.1:11434';
+    const response = await fetch(`${OLLAMA_BASE}/api/tags`);
+    if (!response.ok) return c.json({ error: 'Ollama offline' }, response.status);
+    const data = await response.json();
+    return c.json(data);
+  } catch (err) {
+    return c.json({ error: 'Ollama offline' }, 503);
+  }
+});
+
 app.post('/chat/gemini', chatGemini);
 app.post('/chat/openrouter', chatOpenRouter);
 app.post('/chat/ollama', chatOllama);
