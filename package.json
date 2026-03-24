@@ -12,19 +12,20 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@cloudflare/workers-types": "^4.20260317.1",
     "@google/genai": "^1.46.0",
     "@google/generative-ai": "^0.24.1",
+    "@hono/vite-dev-server": "^0.25.1",
     "@mlc-ai/web-llm": "^0.2.82",
-    "@netlify/functions": "^5.1.5",
     "clsx": "^2.1.1",
     "framer-motion": "^12.38.0",
+    "hono": "^4.12.9",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.577.0",
     "motion": "^12.36.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-markdown": "^10.1.0",
-    "serverless-http": "^4.0.0",
     "tailwind-merge": "^3.5.0"
   },
   "devDependencies": {
@@ -34,15 +35,12 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.0",
-    "concurrently": "^9.2.1",
     "cors": "^2.8.6",
     "cross-env": "^10.1.0",
     "dotenv": "^17.3.1",
     "eslint": "^9.39.4",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",
-    "express": "^5.2.1",
-    "express-rate-limit": "^8.3.1",
     "globals": "^17.4.0",
     "tailwindcss": "^4.2.1",
     "vite": "^8.0.0"
