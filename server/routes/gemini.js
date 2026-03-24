@@ -12,15 +12,26 @@ export const chatGemini = async (c) => {
     }
 
     const apiKey = await getApiKey(c, 'gemini_api_key');
-    console.log(`[Gemini] API Key check: ${apiKey ? `Found (Length: ${apiKey.length})` : 'NOT FOUND'}`);
-    if (!apiKey) {
-      return c.json({ error: 'Database configuration error: gemini_api_key is not set in api_keys table' }, 503);
+    
+    // VERY Detailed Logging (Safe)
+    console.log(`\n--- GEMINI API KEY DIAGNOSTICS ---`);
+    console.log(`Type: ${typeof apiKey}`);
+    console.log(`Is Null/Undefined: ${!apiKey}`);
+    if (typeof apiKey === 'string') {
+        console.log(`Length: ${apiKey.length}`);
+        console.log(`Matches 'AIza': ${apiKey.startsWith('AIza')}`);
+        console.log(`Has whitespace: ${apiKey !== apiKey.trim()}`);
+    }
+    console.log(`----------------------------------\n`);
+
+    if (!apiKey || typeof apiKey !== 'string' || apiKey.trim() === '') {
+      return c.json({ error: 'Database configuration error: gemini_api_key is missing or empty' }, 503);
     }
 
     const messages = validateMessages(body.messages);
     const modelId = validateModelId(body.modelId || 'gemini-2.0-flash');
 
-    const ai = new GoogleGenAI({ apiKey });
+    const ai = new GoogleGenAI({ apiKey: apiKey.trim() });
 
     const contents = messages.map(msg => ({
       role: msg.role === 'user' ? 'user' : 'model',
