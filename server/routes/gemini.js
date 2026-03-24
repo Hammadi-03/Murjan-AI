@@ -2,6 +2,7 @@ import { GoogleGenAI } from '@google/genai';
 import { streamSSE } from 'hono/streaming';
 import { env } from 'hono/adapter';
 import { validateMessages, validateModelId } from '../validation.js';
+import { getApiKey } from '../db.js';
 
 export const chatGemini = async (c) => {
   try {
@@ -10,10 +11,9 @@ export const chatGemini = async (c) => {
       return c.json({ error: 'Missing messages in request body' }, 400);
     }
 
-    const processEnv = env(c);
-    const apiKey = processEnv.GEMINI_API_KEY;
+    const apiKey = await getApiKey('gemini_api_key');
     if (!apiKey) {
-      return c.json({ error: 'Server configuration error: GEMINI_API_KEY is not set' }, 503);
+      return c.json({ error: 'Database configuration error: gemini_api_key is not set in api_keys table' }, 503);
     }
 
     const messages = validateMessages(body.messages);

@@ -1,6 +1,7 @@
 import { streamSSE } from 'hono/streaming';
 import { env } from 'hono/adapter';
 import { validateMessages, validateModelId } from '../validation.js';
+import { getApiKey } from '../db.js';
 
 const FALLBACK_MODELS = [
   'google/gemini-2.0-flash-lite:free',
@@ -10,10 +11,9 @@ const FALLBACK_MODELS = [
 
 export const chatOpenRouter = async (c) => {
   try {
-    const processEnv = env(c);
-    const apiKey = processEnv.OPENROUTER_API_KEY;
+    const apiKey = await getApiKey('openrouter_api_key');
     if (!apiKey) {
-      return c.json({ error: 'Server configuration error: OPENROUTER_API_KEY is not set' }, 503);
+      return c.json({ error: 'Database configuration error: openrouter_api_key is not set in api_keys table' }, 503);
     }
 
     const body = await c.req.json().catch(() => ({}));
