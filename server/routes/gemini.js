@@ -11,7 +11,7 @@ export const chatGemini = async (c) => {
       return c.json({ error: 'Missing messages in request body' }, 400);
     }
 
-    const apiKey = await getApiKey('gemini_api_key');
+    const apiKey = await getApiKey(c, 'gemini_api_key');
     if (!apiKey) {
       return c.json({ error: 'Database configuration error: gemini_api_key is not set in api_keys table' }, 503);
     }

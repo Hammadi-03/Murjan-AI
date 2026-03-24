@@ -1,0 +1,8 @@
+name = "murjan-ai"
+pages_build_output_dir = "dist"
+compatibility_date = "2024-03-24"
+
+# Environment Variables for Production
+[vars]
+GEMINI_API_KEY = "PLACEHOLDER_SET_IN_DASHBOARD"
+OPENROUTER_API_KEY = "PLACEHOLDER_SET_IN_DASHBOARD"

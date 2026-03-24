@@ -11,7 +11,7 @@ const FALLBACK_MODELS = [
 
 export const chatOpenRouter = async (c) => {
   try {
-    const apiKey = await getApiKey('openrouter_api_key');
+    const apiKey = await getApiKey(c, 'openrouter_api_key');
     if (!apiKey) {
       return c.json({ error: 'Database configuration error: openrouter_api_key is not set in api_keys table' }, 503);
     }
