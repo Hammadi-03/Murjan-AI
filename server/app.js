@@ -37,8 +37,13 @@ app.post('/chat/gemini', chatGemini);
 app.post('/chat/openrouter', chatOpenRouter);
 app.post('/chat/ollama', chatOllama);
 
+// Catch-all 404 for the API
+app.all('*', (c) => {
+  return c.json({ error: `Not Found: ${c.req.method} ${c.req.path}` }, 404);
+});
+
 app.onError((err, c) => {
-  console.error('[Server Error]', err.message);
+  console.error(`[Server Error] ${c.req.method} ${c.req.path}:`, err.message);
   return c.json({ error: err.message || 'Internal server error' }, err.status || 500);
 });
 

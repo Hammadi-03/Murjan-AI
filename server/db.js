@@ -19,7 +19,12 @@ export async function getApiKey(c, keyName) {
           
     if (key && typeof key === 'string') {
       key = key.trim();
-      if (!key.includes('(Replace this')) return key;
+      const isPlaceholder = 
+        key.includes('(Replace this') || 
+        key.includes('PLACEHOLDER') || 
+        key.includes('REPLACE_ME');
+        
+      if (!isPlaceholder) return key;
     }
   } catch (error) {
     console.warn(`Error resolving API key environment variables for ${keyName}`);

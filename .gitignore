@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Cloudflare local variables
+.dev.vars
+.wrangler
+
 # ── SECRETS – NEVER COMMIT THESE ─────────────────────────────────────────────
 .env
 .env.*
