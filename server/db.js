@@ -24,7 +24,12 @@ export async function getApiKey(c, keyName) {
         key.includes('PLACEHOLDER') || 
         key.includes('REPLACE_ME');
         
-      if (!isPlaceholder) return key;
+      if (!isPlaceholder) {
+        console.log(`[Key Source] Found ${keyName} in env: ${key.substring(0, 4)}...`);
+        return key;
+      } else {
+        console.log(`[Key Source] Found placeholder for ${keyName} in env, skipping...`);
+      }
     }
   } catch (error) {
     console.warn(`Error resolving API key environment variables for ${keyName}`);
@@ -54,7 +59,10 @@ export async function getApiKey(c, keyName) {
 
     if (rows && rows[0] && rows[0].key_value) {
       const dbKey = rows[0].key_value.trim();
-      if (!dbKey.includes('(Replace this')) return dbKey;
+      if (!dbKey.includes('(Replace this')) {
+        console.log(`[Key Source] Found ${keyName} in database: ${dbKey.substring(0, 4)}...`);
+        return dbKey;
+      }
     }
   } catch (error) {
     if (!process.env.DB_HOST) {
