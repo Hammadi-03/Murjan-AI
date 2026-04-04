@@ -1,4 +1,4 @@
-name = "murjan-ai01"
+name = "murjanai"
 pages_build_output_dir = "dist"
 compatibility_date = "2024-03-24"
 
@@ -7,5 +7,5 @@ directory = "./dist"
 
 # Environment Variables for Production
 [vars]
-GEMINI_API_KEY = "PLACEHOLDER_SET_IN_DASHBOARD"
+GEMINI_API_KEY = "PLACEHOLDER_SET_IN_DASHBOAR"
 OPENROUTER_API_KEY = "PLACEHOLDER_SET_IN_DASHBOARD"
