@@ -1,16 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { Menu } from 'lucide-react';
 import { AIChatInput } from './components/ui/ai-chat-input';
 import Sidebar from './components/layout/Sidebar';
-import MessageList from './components/chat/MessageList';
-import WelcomeScreen from './components/chat/WelcomeScreen';
 import { useChat } from './hooks/useChat';
-import { ollamaService } from './services/ollama';
-import { geminiService } from './services/gemini';
-import { openrouterService } from './services/openrouter';
-import { webllmService } from './services/webllm';
 import { TextShimmer } from './components/ui/text-shimmer';
 import { MODELS, DEFAULT_MODEL } from './constants';
+
+// Lazy-loaded components (code-split for faster initial load)
+const MessageList = lazy(() => import('./components/chat/MessageList'));
+const WelcomeScreen = lazy(() => import('./components/chat/WelcomeScreen'));
+
+// Lazy-loaded services (only loaded when their provider is selected)
+const getService = async (provider) => {
+  switch (provider) {
+    case 'Google':
+      return (await import('./services/gemini')).geminiService;
+    case 'OpenRouter':
+      return (await import('./services/openrouter')).openrouterService;
+    case 'WebLLM':
+      return (await import('./services/webllm')).webllmService;
+    default:
+      return (await import('./services/ollama')).ollamaService;
+  }
+};
 
 export default function App() {
   const {
@@ -88,10 +100,11 @@ export default function App() {
       }));
       
       const modelInfo = MODELS.find(m => m.id === currentModel);
+      const service = await getService(modelInfo?.provider);
 
       if (modelInfo?.provider === 'WebLLM') {
         setWebllmProgress(prev => ({ ...prev, loading: true }));
-        await webllmService.chatStream(
+        await service.chatStream(
           messages, 
           currentModel, 
           (chunk) => {
@@ -102,16 +115,8 @@ export default function App() {
             setWebllmProgress({ text, progress, loading: true });
           }
         );
-      } else if (modelInfo?.provider === 'OpenRouter') {
-        await openrouterService.chatStream(messages, currentModel, (chunk) => {
-          updateLastMessage(currentId, chunk);
-        });
-      } else if (modelInfo?.provider === 'Google') {
-        await geminiService.chatStream(messages, currentModel, (chunk) => {
-          updateLastMessage(currentId, chunk);
-        });
       } else {
-        await ollamaService.chatStream(messages, currentModel, (chunk) => {
+        await service.chatStream(messages, currentModel, (chunk) => {
           updateLastMessage(currentId, chunk);
         });
       }
@@ -203,11 +208,13 @@ export default function App() {
         )}
 
         <div className="flex-1 overflow-y-auto w-full max-w-5xl mx-auto px-4 pt-4 pb-48 custom-scrollbar relative">
-          {isLanding ? (
-            <WelcomeScreen onNewChat={handleStartChat} />
-          ) : (
-            <MessageList messages={activeChat?.messages || []} isTyping={isTyping} />
-          )}
+          <Suspense fallback={<div className="h-full" />}>
+            {isLanding ? (
+              <WelcomeScreen onNewChat={handleStartChat} />
+            ) : (
+              <MessageList messages={activeChat?.messages || []} isTyping={isTyping} />
+            )}
+          </Suspense>
         </div>
 
         {!isLanding && (

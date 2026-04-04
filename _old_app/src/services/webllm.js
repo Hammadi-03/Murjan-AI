@@ -1,6 +1,13 @@
-import * as webllm from "@mlc-ai/web-llm";
-
+// WebLLM is loaded dynamically to avoid bloating the main bundle (~5MB savings)
 let engine = null;
+let webllmModule = null;
+
+async function getWebLLM() {
+  if (!webllmModule) {
+    webllmModule = await import("@mlc-ai/web-llm");
+  }
+  return webllmModule;
+}
 
 export const webllmService = {
   /**
@@ -9,6 +16,7 @@ export const webllmService = {
   init: async (modelId, onProgress) => {
     if (engine) return engine;
 
+    const webllm = await getWebLLM();
     engine = new webllm.MLCEngine();
     engine.setInitProgressCallback((report) => {
       if (onProgress) onProgress(report.text, report.progress);
