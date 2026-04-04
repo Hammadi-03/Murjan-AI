@@ -58,15 +58,18 @@ export const chatGemini = async (c) => {
     });
 
     const isThinkingModel = modelId.includes('thinking') || modelId.includes('flash-preview');
+    const isImageModel = modelId.includes('image');
 
     const result = await ai.models.generateContentStream({
       model: modelId,
       contents,
-      ...(isThinkingModel && {
-        config: {
-          thinkingConfig: { includeThoughts: true }
-        }
-      })
+      config: {
+        ...(isThinkingModel && { thinkingConfig: { includeThoughts: true } }),
+        ...(isImageModel && {
+          imageConfig: { aspect_ratio: "1:1" },
+          responseModalities: ["IMAGE", "TEXT"]
+        })
+      }
     });
 
     return streamSSE(c, async (stream) => {
@@ -76,10 +79,19 @@ export const chatGemini = async (c) => {
         
         for (const part of chunk.candidates[0].content.parts) {
           let text = '';
-          if (part.text) text = part.text;
-          else if (part.executableCode) text = `\n\`\`\`${part.executableCode.language || ''}\n${part.executableCode.code}\n\`\`\`\n`;
-          else if (part.codeExecutionResult) text = `\n**Output:**\n\`\`\`\n${part.codeExecutionResult.output}\n\`\`\`\n`;
-          else if (part.thought) text = `\n> *Thinking...*\n${part.thought}\n`;
+          if (part.text) {
+            text = part.text;
+          } else if (part.inlineData) {
+            // Handle generated image! Send as markdown to frontend
+            const { data, mimeType } = part.inlineData;
+            text = `\n\n![Generated Image](data:${mimeType};base64,${data})\n\n`;
+          } else if (part.executableCode) {
+            text = `\n\`\`\`${part.executableCode.language || ''}\n${part.executableCode.code}\n\`\`\`\n`;
+          } else if (part.codeExecutionResult) {
+            text = `\n**Output:**\n\`\`\`\n${part.codeExecutionResult.output}\n\`\`\`\n`;
+          } else if (part.thought) {
+            text = `\n> *Thinking...*\n${part.thought}\n`;
+          }
 
           if (text) {
             await stream.writeSSE({ data: JSON.stringify({ content: text }) });
