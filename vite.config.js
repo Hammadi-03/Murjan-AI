@@ -15,15 +15,25 @@ export default defineConfig({
     // Split large vendor libraries into separate cacheable chunks
     rollupOptions: {
       output: {
-        manualChunks: {
-          // React core — cached separately, rarely changes
-          'vendor-react': ['react', 'react-dom'],
-          // Markdown rendering
-          'vendor-markdown': ['react-markdown'],
-          // Animation library
-          'vendor-motion': ['framer-motion', 'motion'],
-          // Icons — only the used icons are tree-shaken, but chunk them separately
-          'vendor-icons': ['lucide-react'],
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('react-dom') || id.includes('react/')) {
+              return 'vendor-react';
+            }
+            if (id.includes('react-markdown')) {
+              return 'vendor-markdown';
+            }
+            if (id.includes('framer-motion') || id.includes('motion')) {
+              return 'vendor-motion';
+            }
+            if (id.includes('lucide-react')) {
+              return 'vendor-icons';
+            }
+            if (id.includes('web-llm')) {
+              return 'vendor-llm';
+            }
+            return 'vendor';
+          }
         },
       },
     },
