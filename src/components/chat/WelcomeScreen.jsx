@@ -31,7 +31,7 @@ export default function WelcomeScreen({ onNewChat }) {
           </div>
         </div>
         <p className="text-gray-400 max-w-md mx-auto text-lg mb-24">
-          Murjan AI is here to help you with your daily tasks, research, and creative projects.
+       Murjan AI is designed to assist with daily tasks, research, and creativity. This project was developed by Hammadi-01, a student at IDN Boarding School, to provide an intelligent and accessible AI experience.
         </p>
 
         <InteractiveHoverButton 
