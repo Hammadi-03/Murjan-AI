@@ -43,10 +43,10 @@ export async function getApiKey(c, keyName) {
     
     if (!pool) {
       pool = mysql.createPool({
-        host: process.env.DB_HOST || 'localhost',
-        user: process.env.DB_USER || 'root',
+        host: process.env.DB_HOST || '127.0.0.1',
+        user: process.env.DB_USERNAME || process.env.DB_USER || 'root',
         password: process.env.DB_PASSWORD || '',
-        database: process.env.DB_NAME || 'murjan_ai',
+        database: process.env.DB_DATABASE || process.env.DB_NAME || 'murjan_ai',
         waitForConnections: true,
         connectionLimit: 5
       });
