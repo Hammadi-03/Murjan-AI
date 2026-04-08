@@ -29,7 +29,7 @@ export const chatGemini = async (c) => {
     }
 
     const messages = validateMessages(body.messages);
-    const modelId = validateModelId(body.modelId || 'gemini-3-flash-preview');
+    const modelId = validateModelId(body.modelId || 'gemini-1.5-flash');
 
     const ai = new GoogleGenAI({ apiKey: apiKey.trim() });
 
