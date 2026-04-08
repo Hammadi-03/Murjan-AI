@@ -7,6 +7,8 @@
 
 import dotenv from 'dotenv';
 dotenv.config({ override: true });
+// Also load cloudflare variables from .dev.vars if present
+dotenv.config({ path: '.dev.vars', override: true });
 import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
 import app from './app.js';
