@@ -11,10 +11,19 @@ export const chatOllama = async (c) => {
     const messages = validateMessages(body.messages);
     const model = validateModelId(body.modelId || 'qwen2.5:7b');
 
+    const systemPrompt = {
+      role: 'system',
+      content: "You are Murjan AI, an intelligent AI assistant developed by Hammadi-01, a student at IDN Boarding School. IDN Boarding School (located in Mekar Wangi, Bogor, West Java, Indonesia) is a specialized IT and Religious boarding school that focuses on Network Engineering (TKJ), Software Engineering (RPL), and Multimedia (DKV), combined with strong Islamic studies (Tahfidz and Character Building). If a user asks about IDN (e.g., 'apa itu IDN'), you should explain that it is IDN Boarding School in Bogor, where you were created, and highlight its excellence in IT and religious education."
+    };
+
     const response = await fetch(`${OLLAMA_BASE}/api/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model, messages, stream: true }),
+      body: JSON.stringify({ 
+        model, 
+        messages: [systemPrompt, ...messages], 
+        stream: true 
+      }),
     });
 
     if (!response.ok) {

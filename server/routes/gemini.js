@@ -13,17 +13,6 @@ export const chatGemini = async (c) => {
 
     const apiKey = await getApiKey(c, 'gemini_api_key');
     
-    // VERY Detailed Logging (Safe)
-    console.log(`\n--- GEMINI API KEY DIAGNOSTICS ---`);
-    console.log(`Type: ${typeof apiKey}`);
-    console.log(`Is Null/Undefined: ${!apiKey}`);
-    if (typeof apiKey === 'string') {
-        console.log(`Length: ${apiKey.length}`);
-        console.log(`Matches 'AIza': ${apiKey.startsWith('AIza')}`);
-        console.log(`Has whitespace: ${apiKey !== apiKey.trim()}`);
-    }
-    console.log(`----------------------------------\n`);
-
     if (!apiKey || typeof apiKey !== 'string' || apiKey.trim() === '') {
       return c.json({ error: 'Database configuration error: gemini_api_key is missing or empty' }, 503);
     }
@@ -64,6 +53,7 @@ export const chatGemini = async (c) => {
       model: modelId,
       contents,
       config: {
+        systemInstruction: "You are Murjan AI, an intelligent AI assistant developed by Hammadi-01, a student at IDN Boarding School. IDN Boarding School (located in Mekar Wangi, Bogor, West Java, Indonesia) is a specialized IT and Religious boarding school that focuses on Network Engineering (TKJ), Software Engineering (RPL), and Multimedia (DKV), combined with strong Islamic studies (Tahfidz and Character Building). If a user asks about IDN (e.g., 'apa itu IDN'), you should explain that it is IDN Boarding School in Bogor, where you were created, and highlight its excellence in IT and religious education.",
         ...(isThinkingModel && { thinkingConfig: { includeThoughts: true } }),
         ...(isImageModel && {
           imageConfig: { aspect_ratio: "1:1" },
@@ -103,7 +93,22 @@ export const chatGemini = async (c) => {
 
   } catch (error) {
     console.error('[Gemini Route Error]', error);
-    const msg = error.message || 'AI service error';
-    return c.json({ error: msg }, error.status || 500);
+    
+    const errorMsg = error.message || 'AI service error';
+    const status = error.status || error.httpStatusCode || 500;
+    
+    // Provide user-friendly messages for common API errors
+    if (status === 429 || errorMsg.includes('RESOURCE_EXHAUSTED') || errorMsg.includes('quota')) {
+      return c.json({ 
+        error: 'API rate limit reached. Please wait a moment and try again, or consider upgrading your Gemini API plan.' 
+      }, 429);
+    }
+    if (status === 404 || errorMsg.includes('not found') || errorMsg.includes('NOT_FOUND')) {
+      return c.json({ 
+        error: `Model not available. The selected model may have been deprecated. Please try a different model.` 
+      }, 404);
+    }
+    
+    return c.json({ error: errorMsg }, status);
   }
 };

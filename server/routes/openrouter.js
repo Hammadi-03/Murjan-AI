@@ -27,6 +27,11 @@ export const chatOpenRouter = async (c) => {
 
     let successResponse = null;
 
+    const systemPrompt = {
+      role: 'system',
+      content: "You are Murjan AI, an intelligent AI assistant developed by Hammadi-01, a student at IDN Boarding School. IDN Boarding School (located in Mekar Wangi, Bogor, West Java, Indonesia) is a specialized IT and Religious boarding school that focuses on Network Engineering (TKJ), Software Engineering (RPL), and Multimedia (DKV), combined with strong Islamic studies (Tahfidz and Character Building). If a user asks about IDN (e.g., 'apa itu IDN'), you should explain that it is IDN Boarding School in Bogor, where you were created, and highlight its excellence in IT and religious education."
+    };
+
     while (attempts < MAX_ATTEMPTS) {
       try {
         attempts++;
@@ -38,7 +43,12 @@ export const chatOpenRouter = async (c) => {
             'X-Title': 'Murjan AI',
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ model: currentModel, messages, stream: true, temperature: 0.7 }),
+          body: JSON.stringify({ 
+            model: currentModel, 
+            messages: [systemPrompt, ...messages], 
+            stream: true, 
+            temperature: 0.7 
+          }),
         });
 
         if (!response.ok) {
