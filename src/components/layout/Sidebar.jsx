@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Menu, Star, Edit, MoreVertical, Trash2 } from 'lucide-react';
+import { Star, Edit, MoreVertical, Trash2 } from 'lucide-react';
 import { MODELS } from '../../constants';
 
 export default function Sidebar({ 
@@ -33,14 +33,7 @@ export default function Sidebar({
         style={{ backgroundImage: noiseSvg }}
       ></div>
       
-      <div className="p-5 flex flex-col relative z-10 w-full">
-        <button 
-          onClick={onClose}
-          className="text-gray-300 hover:text-white mb-8 self-start transition-colors"
-          aria-label="Close Sidebar"
-        >
-          <Menu size={28} />
-        </button>
+      <div className="p-5 flex flex-col relative z-10 w-full pt-16">
         
         <button 
           onClick={onNewChat}

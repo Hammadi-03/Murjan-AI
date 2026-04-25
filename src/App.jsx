@@ -1,5 +1,6 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
-import { Menu, LogOut } from 'lucide-react';
+import { LogOut } from 'lucide-react';
+import { HamburgerMenu } from './components/ui/HamburgerMenu';
 import { AIChatInput } from './components/ui/ai-chat-input';
 import Sidebar from './components/layout/Sidebar';
 import { useChat } from './hooks/useChat';
@@ -203,17 +204,13 @@ export default function App() {
       />
 
       <main className="flex-1 flex flex-col bg-[#1e212b]/40 backdrop-blur-xl relative z-10 border-l border-white/5 overflow-hidden">
-        {!isSidebarOpen && (
-          <div className="absolute top-6 left-6 z-50">
-            <button 
-              onClick={() => setIsSidebarOpen(true)} 
-              className="text-gray-300/60 hover:text-white transition-all p-2 bg-white/5 hover:bg-white/10 rounded-lg border border-white/10 pointer-events-auto shadow-lg"
-              title="Open Sidebar"
-            >
-              <Menu size={24} />
-            </button>
-          </div>
-        )}
+        <div className="absolute top-6 left-6 z-50">
+          <HamburgerMenu 
+            isOpen={isSidebarOpen} 
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)} 
+            className={`[&_svg]:w-6 [&_svg]:h-6 transition-all shadow-lg ${isSidebarOpen ? 'text-gray-300 hover:text-white' : 'text-gray-300/60 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg border border-white/10'}`} 
+          />
+        </div>
 
         <div className="absolute top-6 left-1/2 -translate-x-1/2 md:left-20 md:translate-x-0 select-none flex items-center gap-3 z-40 pointer-events-none">
           <h1 className="font-qatar text-xl font-medium tracking-wide text-white opacity-40">Murjan</h1>
