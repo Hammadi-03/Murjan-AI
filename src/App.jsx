@@ -203,7 +203,7 @@ export default function App() {
         onRenameChat={renameChat}
       />
 
-      <main className="flex-1 flex flex-col bg-[#1e212b]/40 backdrop-blur-xl relative z-10 border-l border-white/5 overflow-hidden">
+      <main className="flex-1 flex flex-col bg-[#1e212b]/40 backdrop-blur-xl relative z-10 border border-white/5 overflow-hidden m-2 md:m-3 rounded-[24px] md:rounded-[32px] shadow-2xl">
         <div className="absolute top-6 left-6 z-50">
           <HamburgerMenu 
             isOpen={isSidebarOpen} 
