@@ -75,3 +75,30 @@ export async function getApiKey(c, keyName) {
   return null;
 }
 
+/**
+ * Execute a query against the database pool
+ */
+export async function dbQuery(sql, params) {
+  try {
+    const getMysql = new Function("return import('mysql2/promise')");
+    const mysql = await getMysql();
+    
+    if (!pool) {
+      pool = mysql.createPool({
+        host: process.env.DB_HOST || '127.0.0.1',
+        user: process.env.DB_USERNAME || process.env.DB_USER || 'root',
+        password: process.env.DB_PASSWORD || '',
+        database: process.env.DB_DATABASE || process.env.DB_NAME || 'murjan_ai',
+        waitForConnections: true,
+        connectionLimit: 5
+      });
+    }
+
+    const [results] = await pool.query(sql, params);
+    return results;
+  } catch (error) {
+    console.error(`[DB Query Error]:`, error.message);
+    throw error;
+  }
+}
+

@@ -4,16 +4,20 @@
 
 
 
+import Cookies from 'js-cookie';
+
 export const ollamaService = {
   /**
    * Generates a chat response with streaming
    */
   chatStream: async (messages, modelId = 'qwen2.5:7b', onChunk) => {
     try {
+      const token = Cookies.get('auth_token');
       const response = await fetch('/api/chat/ollama', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
           modelId,

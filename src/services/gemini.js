@@ -5,6 +5,8 @@
 
 
 
+import Cookies from 'js-cookie';
+
 export const geminiService = {
   /**
    * Streams a Gemini response via our backend proxy.
@@ -14,9 +16,13 @@ export const geminiService = {
    * @param {(accumulatedText: string) => void} onChunk
    */
   chatStream: async (messages, modelId, onChunk) => {
+    const token = Cookies.get('auth_token');
     const response = await fetch('/api/chat/gemini', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
       body: JSON.stringify({ messages, modelId }),
     });
 

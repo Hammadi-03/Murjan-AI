@@ -1,10 +1,13 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
-import { Menu } from 'lucide-react';
+import { Menu, LogOut } from 'lucide-react';
 import { AIChatInput } from './components/ui/ai-chat-input';
 import Sidebar from './components/layout/Sidebar';
 import { useChat } from './hooks/useChat';
 import { TextShimmer } from './components/ui/text-shimmer';
 import { MODELS, DEFAULT_MODEL } from './constants';
+import { useAuth } from './hooks/useAuth';
+import AuthScreen from './components/auth/AuthScreen';
+import Cookies from 'js-cookie';
 
 // Lazy-loaded components (code-split for faster initial load)
 const MessageList = lazy(() => import('./components/chat/MessageList'));
@@ -44,6 +47,8 @@ export default function App() {
   const [webllmProgress, setWebllmProgress] = useState({ text: '', progress: 0, loading: false });
   const [isLanding, setIsLanding] = useState(true);
 
+  const { user, loading: authLoading, login, register, logout, token } = useAuth();
+
   // API Keys are now strictly handled by the expressive backend
   // The frontend no longer requests keys from .env.
 
@@ -54,7 +59,12 @@ export default function App() {
   useEffect(() => {
     const checkOllama = async () => {
       try {
-        const response = await fetch('/api/tags');
+        const token = Cookies.get('auth_token');
+        const response = await fetch('/api/tags', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
         if (response.ok) setOllamaStatus('online');
         else setOllamaStatus('offline');
       } catch (error) {
@@ -137,6 +147,18 @@ export default function App() {
     }
   };
 
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <AuthScreen onLogin={login} onRegister={register} />;
+  }
+
   return (
     <div className="fixed inset-0 flex bg-[#0a0a0f] overflow-hidden text-white font-sans selection:bg-indigo-500/30">
       {webllmProgress.loading && (
@@ -199,6 +221,18 @@ export default function App() {
             <div className="flex items-center gap-1.5 px-2 py-0.5 bg-green-500/10 border border-green-500/20 rounded-full">
               <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
               <span className="text-[10px] text-green-500 font-medium uppercase tracking-tight">AI Active</span>
+            </div>
+          )}
+          {user && (
+            <div className="flex items-center gap-3 ml-4 pointer-events-auto">
+              <div className="h-4 w-px bg-white/10 mx-1"></div>
+              <span className="text-xs text-gray-500 font-medium lowercase">@{user.username}</span>
+              <button 
+                onClick={logout}
+                className="text-gray-500 hover:text-red-400 transition-colors flex items-center gap-1.5 text-[10px] uppercase font-bold tracking-tighter"
+              >
+                <LogOut size={12} /> Sign Out
+              </button>
             </div>
           )}
         </div>

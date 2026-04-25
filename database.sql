@@ -13,6 +13,17 @@ CREATE TABLE IF NOT EXISTS `api_keys` (
   UNIQUE KEY `idx_key_name` (`key_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Create the users table
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_username` (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Insert some dummy placeholders (You should edit these in phpMyAdmin)
 INSERT IGNORE INTO `api_keys` (`id`, `key_name`, `key_value`) VALUES
 (1, 'gemini_api_key', 'AIzaSy... (Replace this with real key inside phpMyAdmin)'),
